@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="eng">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Myopia Trading List</title>
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect"
+    href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin>
+
+    <link
+    href="https://fonts.googleapis.com/css2?family=Barrio&family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&display=swap"
+    rel="stylesheet">
+
+    <link rel="stylesheet" href="style (o).css">
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- PAPAPARSE -->
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+    <!-- EMAILJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+</head>
+
+<body>
+<nav class="top-nav">
+    <button class="nav-link active" data-category="all">
+        All
+    </button>
+
+    <button class="nav-link" data-category="videos">
+        Videos
+    </button>
+
+    <button class="nav-link" data-category="concerts">
+        Concerts
+    </button>
+
+    <button class="nav-link" data-category="proshots">
+        Theatre Pro-Shots
+    </button>
+
+</nav>    
+
+<div class="container">
+
+    <header class="top-header">
+
+        <h1>Myopia Trading List</h1>
+
+        <p>
+            Welcome to my trading list.
+            For trades contact me on Reddit
+            (u/myopia779)
+            or by email
+            (myopia779@gmail.com).
+        </p>
+
+    </header>
+    
+
+    <div class="controls">
+
+        <input
+            type="text"
+            id="searchInput"
+            class="search-bar"
+            placeholder="Search title, cast, notes, master..."
+        >
+
+    </div>
+
+    <div id="contentArea"></div>
+
+</div>
+
+<button id="tradeBar" class="trade-bar">
+    <span class="trade-bar-icon">
+        <i class="fa-solid fa-arrow-right-arrow-left"></i>
+    </span>
+    <span id="tradeBarCount" class="trade-bar-count"></span>
+    <span class="trade-bar-cta">
+        Start a trade
+        <i class="fa-solid fa-arrow-right"></i>
+    </span>
+</button>
+
+<div id="tradeModalOverlay" class="trade-modal-overlay">
+
+    <div class="trade-modal">
+
+        <div class="trade-modal-header">
+
+            <h2>Request a trade</h2>
+
+            <button id="tradeModalClose" class="trade-modal-close" type="button">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <p class="trade-modal-sub">
+            These are the recordings you've selected.
+            Remove any you didn't mean to include,
+            then send your request.
+        </p>
+
+        <div id="tradeSelectedList" class="trade-selected-list"></div>
+
+        <form id="tradeForm" class="trade-form">
+
+            <label class="trade-field">
+                <span>Your email</span>
+                <input
+                    type="email"
+                    id="tradeEmail"
+                    placeholder="you@example.com"
+                    required
+                >
+                <span id="tradeEmailError" class="trade-field-error"></span>
+            </label>
+
+            <label class="trade-checkbox-field">
+                <input
+                    type="checkbox"
+                    id="tradeGift"
+                >
+                <span>Tick this box if you're asking for a gift</span>
+            </label>
+
+            <div id="tradeLinkField" class="trade-field">
+                <span>Link to your collection / list (optional)</span>
+                <input
+                    type="text"
+                    id="tradeLink"
+                    placeholder="Encora, Google Sheet, etc."
+                >
+            </div>
+
+            <label class="trade-field">
+                <span>Comments / questions (optional)</span>
+                <textarea
+                    id="tradeComments"
+                    rows="3"
+                    placeholder="Anything you want me to know"
+                ></textarea>
+            </label>
+
+            <div id="tradeFormStatus" class="trade-form-status"></div>
+
+            <button type="submit" id="tradeSubmitBtn" class="trade-submit">
+                Send request
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+const REAL_DATA_URL =
+'https://docs.google.com/spreadsheets/d/e/2PACX-1vRLbtHlXSzv2e1KQTNcsm-tcBIJniOwX2CSh08v-_EZQQo-9VXaA9c4XSLd32YG9zsEe7eR8g2cskMK/pub?output=csv';
+
+const EMAILJS_PUBLIC_KEY = '53f0mRlvHWe11Y7Xx';
+const EMAILJS_SERVICE_ID = 'service_zpa2m63';
+const EMAILJS_TEMPLATE_USER = 'template_7di2w74';
+const EMAILJS_TEMPLATE_OWNER = 'template_0wfrc7p';
+
+emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+
+let allRecordings = [];
+let activeCategory = 'all';
+let selectedIds = new Set();
+
+function formatWebDate(dateStr) {
+
+    if (!dateStr) return '';
+
+    dateStr = dateStr.trim();
+
+    if (!dateStr.includes('/')) return dateStr;
+
+    const parts = dateStr.split('/');
+
+    if (parts.length !== 3) return dateStr;
+
+    const day = parts[0].trim();
+    const month = parts[1].trim();
+    const year = parts[2].trim();
+
+    const months = [
+        "",
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ];
+
+    if (
+        (day === "00" || day === "0") &&
+        (month === "00" || month === "0")
+    ) {
+        return year;
+    }
+
+    if (day === "00" || day === "0") {
+
+        const mNum = parseInt(month, 10);
+
+        return months[mNum]
+            ? `${months[mNum]}, ${year}`
+            : dateStr;
+    }
+
+    const mNum = parseInt(month, 10);
+
+    return months[mNum]
+        ? `${months[mNum]} ${parseInt(day, 10)}, ${year}`
+        : dateStr;
+}
+
+async function fetchSheetsData() {
+
+    try {
+
+        const response = await fetch(REAL_DATA_URL);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const csvText = await response.text();
+
+        const parsed = Papa.parse(csvText, {
+            header: false,
+            skipEmptyLines: true
+        });
+
+        const rows = parsed.data;
+
+        allRecordings = [];
+
+        for (let i = 1; i < rows.length; i++) {
+
+            const row = rows[i];
+
+            if (!row || !row[0]) continue;
+
+            allRecordings.push({
+
+                id:
+                    row[0]
+                    ? row[0].toString().trim()
+                    : '',
+
+                title:
+                    row[1]
+                    ? row[1].toString().trim()
+                    : '',
+
+                location:
+                    row[2]
+                    ? row[2].toString().trim()
+                    : '',
+
+                production:
+                    row[3]
+                    ? row[3].toString().trim()
+                    : '',
+
+                date:
+                    row[4]
+                    ? row[4].toString().trim()
+                    : '',
+
+                master:
+                    row[5]
+                    ? row[5].toString().trim()
+                    : '',
+
+                format:
+                    row[6]
+                    ? row[6].toString().trim()
+                    : '',
+
+                size:
+                    row[7]
+                    ? row[7].toString().trim()
+                    : '',
+
+                cast:
+                    row[8]
+                    ? row[8].toString().trim()
+                    : '',
+
+                notes:
+                    row[9]
+                    ? row[9].toString().trim()
+                    : '',
+
+                giftStatus:
+                    row[10]
+                    ? row[10].toString().trim()
+                    : '',
+
+                subtitles:
+                    row[11] &&
+                    row[11]
+                        .toString()
+                        .trim()
+                        .toLowerCase() === 'true',
+
+                incomplete:
+                    row[12]
+                    ? row[12].toString().trim()
+                    : '',
+
+                encora:
+                    row[13]
+                    ? row[13].toString().trim()
+                    : ''
+
+            });
+        }
+
+        renderList(allRecordings);
+
+    } catch (error) {
+
+        console.error(error);
+
+        document.getElementById('contentArea').innerHTML = `
+            <div class="error-box">
+                Failed to load Google Sheets data.
+            </div>
+        `;
+    }
+}
+
+function renderList(recordings, expandGroups) {
+
+    const contentArea =
+    document.getElementById('contentArea');
+
+    contentArea.innerHTML = '';
+
+    if (!recordings.length) {
+
+        contentArea.innerHTML = `
+            <div class="no-results">
+                No recordings found.
+            </div>
+        `;
+
+        return;
+    }
+
+    const videos =
+    recordings.filter(r =>
+        r.id &&
+        r.id.toUpperCase().startsWith('A')
+    );
+
+    const proshots =
+    recordings.filter(r =>
+        r.id &&
+        r.id.toUpperCase().startsWith('B')
+    );
+
+    const concerts =
+    recordings.filter(r =>
+        r.id &&
+        r.id.toUpperCase().startsWith('C')
+    );
+
+    if (activeCategory === 'all') {
+
+        createSection(videos, expandGroups);
+        createSection(proshots, expandGroups);
+        createSection(concerts, expandGroups);
+
+    } else if (activeCategory === 'videos') {
+
+        createSection(videos, expandGroups);
+
+    } else if (activeCategory === 'proshots') {
+
+        createSection(proshots, expandGroups);
+
+    } else if (activeCategory === 'concerts') {
+
+        createSection(concerts, expandGroups);
+    }
+
+    if (
+        !contentArea.children.length
+    ) {
+
+        contentArea.innerHTML = `
+            <div class="no-results">
+                No recordings found.
+            </div>
+        `;
+    }
+}
+
+function createSection(items, expandGroups) {
+
+    if (!items.length) return;
+
+    const contentArea =
+    document.getElementById('contentArea');
+
+    const listContainer =
+    document.createElement('div');
+
+    listContainer.className =
+    'list-container';
+
+    const groups = new Map();
+
+    items.forEach(item => {
+
+        const key =
+        item.title || 'Untitled';
+
+        if (!groups.has(key)) {
+            groups.set(key, []);
+        }
+
+        groups.get(key).push(item);
+    });
+
+    groups.forEach((groupItems, groupTitle) => {
+
+        const group =
+        document.createElement('details');
+
+        group.className = 'title-group';
+
+        if (expandGroups) {
+            group.open = true;
+        }
+
+        const summary =
+        document.createElement('summary');
+
+        summary.className = 'title-group-summary';
+
+        summary.innerHTML = `
+            <div class="title-group-left">
+                <h3 class="title-group-name">
+                    ${groupTitle}
+                </h3>
+            </div>
+            <div class="title-group-right">
+                <span class="title-group-count">
+                    ${groupItems.length}
+                    ${groupItems.length === 1
+                        ? 'recording'
+                        : 'recordings'}
+                </span>
+                <div class="title-group-chevron">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+        `;
+
+        group.appendChild(summary);
+
+        const groupBody =
+        document.createElement('div');
+
+        groupBody.className = 'title-group-body';
+
+        groupItems.forEach(item => {
+
+            const card =
+            document.createElement('div');
+
+            card.className = 'show-card';
+
+            card.innerHTML = `
+
+            <div class="card-top">
+
+                <div class="title-block">
+
+                    <div class="title-line">
+
+                        <input
+                            type="checkbox"
+                            class="show-checkbox"
+                            data-id="${item.id}"
+                            ${selectedIds.has(item.id) ? 'checked' : ''}
+                        >
+
+                        <h3 class="show-title">
+                            ${item.title}
+                        </h3>
+
+                        <div class="badge-row">
+
+                            ${item.subtitles
+                                ? `
+                                <span class="tag subtitles-tag">
+                                    SUBTITLES
+                                </span>
+                                `
+                                : ''}
+
+                            ${item.giftStatus &&
+                            item.giftStatus
+                            .toLowerCase()
+                            .includes('ungiftable')
+                                ? `
+                                <span class="tag ungiftable-tag">
+                                    UNGIFTABLE
+                                </span>
+                                `
+                                : ''}
+
+                            ${item.incomplete &&
+                            item.incomplete
+                            .toLowerCase() !== 'false'
+                                ? `
+                                <span class="tag missing-tag">
+                                    ${item.incomplete}
+                                </span>
+                                `
+                                : ''}
+
+                        </div>
+
+                    </div>
+
+                    <div class="meta-pills">
+
+                        ${item.location
+                            ? `
+                            <div class="pill">
+                                <i class="fa-solid fa-masks-theater"></i>
+                                ${item.location}
+                            </div>
+                            `
+                            : ''}
+
+                        ${item.format
+                            ? `
+                            <div class="pill">
+                                <i class="fa-regular fa-file-video"></i>
+                                ${item.format}
+                            </div>
+                            `
+                            : ''}
+
+                        ${item.size
+                            ? `
+                            <div class="pill">
+                                <i class="fa-solid fa-hard-drive"></i>
+                                ${item.size}
+                            </div>
+                            `
+                            : ''}
+
+                    </div>
+
+                </div>
+
+                <div class="show-id desktop-id">
+                    ${item.id}
+                </div>
+
+            </div>
+
+            <div class="info-grid">
+
+                <div class="info-left">
+
+                    ${item.production
+                        ? `
+                        <div class="info-row">
+                            <span>Production</span>
+                            <p>${item.production}</p>
+                        </div>
+                        `
+                        : ''}
+
+                    ${item.date
+                        ? `
+                        <div class="info-row">
+                            <span>Date</span>
+                            <p>${formatWebDate(item.date)}</p>
+                        </div>
+                        `
+                        : ''}
+
+                    ${item.master
+                        ? `
+                        <div class="info-row">
+                            <span>Master</span>
+                            <p>${item.master}</p>
+                        </div>
+                        `
+                        : ''}
+
+                </div>
+
+                <div class="info-right">
+
+                    ${item.cast
+                        ? `
+                        <details class="accordion-box">
+
+                            <summary>
+                                Cast
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </summary>
+
+                            <div class="accordion-content">
+                                ${item.cast}
+                            </div>
+
+                        </details>
+                        `
+                        : ''}
+
+                    ${item.notes
+                        ? `
+                        <details class="accordion-box">
+
+                            <summary>
+                                Notes
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </summary>
+
+                            <div class="accordion-content">
+                                ${item.notes}
+                            </div>
+
+                        </details>
+                        `
+                        : ''}
+
+                    <div class="mobile-bottom-row">
+
+                        ${item.encora
+                            ? `
+                            <a
+                                href="${item.encora}"
+                                target="_blank"
+                                class="encora-link"
+                            >
+                                View on Encora
+                            </a>
+                            `
+                            : ''}
+
+                        <div class="show-id mobile-id">
+                            ${item.id}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            `;
+
+            groupBody.appendChild(card);
+        });
+
+        group.appendChild(groupBody);
+        listContainer.appendChild(group);
+    });
+
+    contentArea.appendChild(listContainer);
+}
+
+function updateTradeBar() {
+
+    const bar =
+    document.getElementById('tradeBar');
+
+    const countEl =
+    document.getElementById('tradeBarCount');
+
+    if (!bar) return;
+
+    if (selectedIds.size > 0) {
+
+        bar.classList.add('visible');
+
+        countEl.textContent =
+        selectedIds.size === 1
+            ? '1 recording selected'
+            : `${selectedIds.size} recordings selected`;
+
+    } else {
+
+        bar.classList.remove('visible');
+    }
+}
+
+document
+.getElementById('contentArea')
+.addEventListener('change', function(e) {
+
+    if (!e.target.classList.contains('show-checkbox')) return;
+
+    const id = e.target.dataset.id;
+
+    if (e.target.checked) {
+        selectedIds.add(id);
+    } else {
+        selectedIds.delete(id);
+    }
+
+    updateTradeBar();
+});
+
+document
+.querySelectorAll('.nav-link')
+.forEach(btn => {
+
+    btn.addEventListener('click', function() {
+
+        document
+        .querySelectorAll('.nav-link')
+        .forEach(b =>
+            b.classList.remove('active')
+        );
+
+        btn.classList.add('active');
+
+        activeCategory =
+        btn.dataset.category;
+
+        document
+        .getElementById('searchInput')
+        .dispatchEvent(new Event('input'));
+    });
+});
+
+document
+.getElementById('searchInput')
+.addEventListener('input', function(e) {
+
+    const query =
+    e.target.value
+    .toLowerCase()
+    .trim();
+
+    if (!query) {
+
+        renderList(allRecordings);
+        return;
+    }
+
+    const filtered =
+    allRecordings.filter(r => {
+
+        return (
+
+            (r.title &&
+            r.title.toLowerCase().includes(query))
+
+            ||
+
+            (r.cast &&
+            r.cast.toLowerCase().includes(query))
+
+            ||
+
+            (r.notes &&
+            r.notes.toLowerCase().includes(query))
+
+            ||
+
+            (r.master &&
+            r.master.toLowerCase().includes(query))
+
+            ||
+
+            (r.production &&
+            r.production.toLowerCase().includes(query))
+
+            ||
+
+            (r.location &&
+            r.location.toLowerCase().includes(query))
+
+            ||
+
+            (r.id &&
+            r.id.toLowerCase().includes(query))
+        );
+    });
+
+    renderList(filtered, true);
+});
+
+function renderSelectedList() {
+
+    const list =
+    document.getElementById('tradeSelectedList');
+
+    list.innerHTML = '';
+
+    if (!selectedIds.size) {
+
+        closeTradeModal();
+        return;
+    }
+
+    selectedIds.forEach(id => {
+
+        const item =
+        allRecordings.find(r => r.id === id);
+
+        if (!item) return;
+
+        const row =
+        document.createElement('div');
+
+        row.className = 'trade-selected-row';
+
+        const labelParts = [
+            item.title,
+            item.master,
+            formatWebDate(item.date)
+        ].filter(Boolean);
+
+        row.innerHTML = `
+            <span class="trade-selected-label">
+                ${labelParts.join(' — ')}
+            </span>
+            <button
+                type="button"
+                class="trade-selected-remove"
+                data-id="${item.id}"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        `;
+
+        list.appendChild(row);
+    });
+}
+
+function openTradeModal() {
+
+    renderSelectedList();
+
+    document
+    .getElementById('tradeModalOverlay')
+    .classList.add('visible');
+
+    document.body.classList.add('modal-open');
+}
+
+function closeTradeModal() {
+
+    document
+    .getElementById('tradeModalOverlay')
+    .classList.remove('visible');
+
+    document.body.classList.remove('modal-open');
+}
+
+document
+.getElementById('tradeBar')
+.addEventListener('click', openTradeModal);
+
+document
+.getElementById('tradeModalClose')
+.addEventListener('click', closeTradeModal);
+
+document
+.getElementById('tradeModalOverlay')
+.addEventListener('click', function(e) {
+
+    if (e.target === this) {
+        closeTradeModal();
+    }
+});
+
+document
+.getElementById('tradeSelectedList')
+.addEventListener('click', function(e) {
+
+    const btn =
+    e.target.closest('.trade-selected-remove');
+
+    if (!btn) return;
+
+    const id = btn.dataset.id;
+
+    selectedIds.delete(id);
+
+    document
+    .querySelectorAll(
+        `.show-checkbox[data-id="${CSS.escape(id)}"]`
+    )
+    .forEach(cb => cb.checked = false);
+
+    updateTradeBar();
+    renderSelectedList();
+});
+
+document
+.getElementById('tradeGift')
+.addEventListener('change', function(e) {
+
+    const linkField =
+    document.getElementById('tradeLinkField');
+
+    if (e.target.checked) {
+
+        linkField.classList.add('trade-field-hidden');
+
+    } else {
+
+        linkField.classList.remove('trade-field-hidden');
+    }
+});
+
+function isValidEmail(value) {
+
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function buildRecordingsListText() {
+
+    const lines = [];
+
+    selectedIds.forEach(id => {
+
+        const item =
+        allRecordings.find(r => r.id === id);
+
+        if (!item) return;
+
+        const parts = [
+            item.title,
+            item.master,
+            formatWebDate(item.date)
+        ].filter(Boolean);
+
+        lines.push('- ' + parts.join(' — '));
+    });
+
+    return lines.join('\n');
+}
+
+function setFormStatus(message, type) {
+
+    const statusEl =
+    document.getElementById('tradeFormStatus');
+
+    statusEl.textContent = message || '';
+
+    statusEl.className =
+    'trade-form-status' +
+    (type ? ` trade-form-status-${type}` : '');
+}
+
+document
+.getElementById('tradeForm')
+.addEventListener('submit', function(e) {
+
+    e.preventDefault();
+
+    const emailInput =
+    document.getElementById('tradeEmail');
+
+    const emailError =
+    document.getElementById('tradeEmailError');
+
+    const email = emailInput.value.trim();
+
+    emailError.textContent = '';
+    emailInput.classList.remove('trade-input-invalid');
+
+    if (!email) {
+
+        emailError.textContent = 'Please enter your email.';
+        emailInput.classList.add('trade-input-invalid');
+        emailInput.focus();
+        return;
+    }
+
+    if (!isValidEmail(email)) {
+
+        emailError.textContent = 'Please enter a valid email address.';
+        emailInput.classList.add('trade-input-invalid');
+        emailInput.focus();
+        return;
+    }
+
+    if (!selectedIds.size) {
+
+        setFormStatus(
+            'You need to select at least one recording first.',
+            'error'
+        );
+        return;
+    }
+
+    const isGift =
+    document.getElementById('tradeGift').checked;
+
+    const collectionLink =
+    document.getElementById('tradeLink').value.trim();
+
+    const comments =
+    document.getElementById('tradeComments').value.trim();
+
+    const templateParams = {
+        user_email: email,
+        recordings_list: buildRecordingsListText(),
+        collection_link: isGift
+            ? 'N/A (gift request)'
+            : (collectionLink || 'Not provided'),
+        is_gift: isGift ? 'Yes' : 'No',
+        comments: comments || 'None'
+    };
+
+    const submitBtn =
+    document.getElementById('tradeSubmitBtn');
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+
+    setFormStatus('Sending your request...', 'info');
+
+    Promise.all([
+
+        emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_USER,
+            templateParams
+        ),
+
+        emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_OWNER,
+            templateParams
+        )
+
+    ]).then(() => {
+
+        setFormStatus(
+            'Request sent! Check your inbox for confirmation.',
+            'success'
+        );
+
+        submitBtn.textContent = 'Send request';
+        submitBtn.disabled = false;
+
+        selectedIds.clear();
+
+        document
+        .querySelectorAll('.show-checkbox')
+        .forEach(cb => cb.checked = false);
+
+        updateTradeBar();
+
+        document.getElementById('tradeForm').reset();
+
+        document
+        .getElementById('tradeLinkField')
+        .classList.remove('trade-field-hidden');
+
+        setTimeout(closeTradeModal, 1800);
+
+    }).catch(error => {
+
+        console.error(error);
+
+        setFormStatus(
+            'Something went wrong sending your request. Please try again.',
+            'error'
+        );
+
+        submitBtn.textContent = 'Send request';
+        submitBtn.disabled = false;
+    });
+});
+
+fetchSheetsData();
+
+</script>
+
+</body>
+</html>
