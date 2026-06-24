@@ -23,7 +23,7 @@
     href="https://fonts.googleapis.com/css2?family=Barrio&family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&display=swap"
     rel="stylesheet">
 
-    <link rel="stylesheet" href="style (p).css">
+    <link rel="stylesheet" href="style (q).css">
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
@@ -39,36 +39,21 @@
 
 <body>
 <nav class="top-nav">
-    <button class="nav-link active" data-category="all">
-        All
-    </button>
-
-    <button class="nav-link" data-category="videos">
-        Videos
-    </button>
-
-    <button class="nav-link" data-category="concerts">
-        Concerts
-    </button>
-
-    <button class="nav-link" data-category="proshots">
-        Theatre Pro-Shots
-    </button>
-
+    <a class="nav-link nav-anchor" href="indexq.html">List</a>
+    <a class="nav-link nav-anchor" href="#about-me">About Me</a>
+    <a class="nav-link nav-anchor" href="#trade-rules">Trade Rules</a>
+    <a class="nav-link nav-anchor" href="#wants">Wants</a>
 </nav>    
 
 <div class="container">
 
     <header class="top-header">
 
-        <h1>Myopia Trading List</h1>
+        <h1>Myopia's Trading List</h1>
 
         <p>
-            Welcome to my trading list.
-            For trades contact me on Reddit
-            (u/myopia779)
-            or by email
-            (myopia779@gmail.com).
+            Welcome to my trading list, a brand new webside I made to automatise the process as much as possible as well as to work on my Java skills.<br>
+            If you don't see any content below the search bar <a href="issues">click here</a>
         </p>
 
     </header>
@@ -91,6 +76,13 @@
                 <span id="filterCount" class="filter-count"></span>
             </button>
 
+        </div>
+
+        <div class="mini-nav">
+            <button class="mini-nav-btn active" data-category="all">All</button>
+            <button class="mini-nav-btn" data-category="videos">Videos</button>
+            <button class="mini-nav-btn" data-category="concerts">Concerts</button>
+            <button class="mini-nav-btn" data-category="proshots">Theatre Pro-Shots</button>
         </div>
 
         <div id="filterPanel" class="filter-panel">
@@ -143,14 +135,28 @@
         </div>
 
         <p class="trade-modal-sub">
-            These are the recordings you've selected.
-            Remove any you didn't mean to include,
-            then send your request.
+            Remove any recordings you didn't mean to include:
         </p>
 
         <div id="tradeSelectedList" class="trade-selected-list"></div>
 
+        <div id="tradeLargeTradeWarning" class="trade-warning" style="display:none;">
+            I don't usually do trades this large. Please contact me directly:<br>
+            Reddit: <strong>u/myopia779</strong> &nbsp;|&nbsp; Email: <strong>myopia779@gmail.com</strong>
+        </div>
+
         <form id="tradeForm" class="trade-form">
+
+            <label class="trade-field">
+                <span>Your name</span>
+                <input
+                    type="text"
+                    id="tradeName"
+                    placeholder="Your trader name"
+                    required
+                >
+                <span id="tradeNameError" class="trade-field-error"></span>
+            </label>
 
             <label class="trade-field">
                 <span>Your email</span>
@@ -168,20 +174,25 @@
                     type="checkbox"
                     id="tradeGift"
                 >
-                <span>Tick this box if you're asking for a gift</span>
+                <span>Tick if you're asking for a gift</span>
             </label>
 
+            <div id="tradeGiftWarning" class="trade-warning trade-warning-gap" style="display:none;">
+                I gift a maximum of 2 recordings. Please remove some from your selection.
+            </div>
+
             <div id="tradeLinkField" class="trade-field">
-                <span>Link to your collection / list (optional)</span>
+                <span>Link to your list</span>
                 <input
                     type="text"
                     id="tradeLink"
-                    placeholder="Encora, Google Sheet, etc."
+                    placeholder="Google Sheet, Document, One Drive, etc."
                 >
+                <span class="trade-field-note">Please do not send Encora collections – I don't have Encora!</span>
             </div>
 
             <label class="trade-field">
-                <span>Comments / questions (optional)</span>
+                <span>Comments</span>
                 <textarea
                     id="tradeComments"
                     rows="3"
@@ -435,9 +446,7 @@ function renderList(recordings, expandGroups) {
 
     if (activeCategory === 'all') {
 
-        createSection(videos, expandGroups);
-        createSection(proshots, expandGroups);
-        createSection(concerts, expandGroups);
+        createSection([...videos, ...proshots, ...concerts], expandGroups);
 
     } else if (activeCategory === 'videos') {
 
@@ -477,19 +486,25 @@ function createSection(items, expandGroups) {
     listContainer.className =
     'list-container';
 
-    const groups = new Map();
+    const groupsRaw = new Map();
 
     items.forEach(item => {
 
         const key =
         item.title || 'Untitled';
 
-        if (!groups.has(key)) {
-            groups.set(key, []);
+        if (!groupsRaw.has(key)) {
+            groupsRaw.set(key, []);
         }
 
-        groups.get(key).push(item);
+        groupsRaw.get(key).push(item);
     });
+
+    const groups = new Map(
+        [...groupsRaw.entries()].sort((a, b) =>
+            a[0].localeCompare(b[0], undefined, { sensitivity: 'base' })
+        )
+    );
 
     groups.forEach((groupItems, groupTitle) => {
 
@@ -787,14 +802,38 @@ document
 
         document
         .querySelectorAll('.nav-link')
-        .forEach(b =>
-            b.classList.remove('active')
-        );
+        .forEach(b => b.classList.remove('active'));
 
         btn.classList.add('active');
 
-        activeCategory =
-        btn.dataset.category;
+        activeCategory = btn.dataset.category;
+
+        document.querySelectorAll('.mini-nav-btn')
+        .forEach(b => b.classList.remove('active'));
+        const m = document.querySelector(`.mini-nav-btn[data-category="${btn.dataset.category}"]`);
+        if (m) m.classList.add('active');
+
+        applyFiltersAndSearch();
+    });
+});
+
+document
+.querySelectorAll('.mini-nav-btn')
+.forEach(btn => {
+
+    btn.addEventListener('click', function() {
+
+        document.querySelectorAll('.mini-nav-btn')
+        .forEach(b => b.classList.remove('active'));
+
+        btn.classList.add('active');
+
+        activeCategory = btn.dataset.category;
+
+        document.querySelectorAll('.nav-link')
+        .forEach(b => b.classList.remove('active'));
+        const m = document.querySelector(`.nav-link[data-category="${btn.dataset.category}"]`);
+        if (m) m.classList.add('active');
 
         applyFiltersAndSearch();
     });
@@ -1081,6 +1120,12 @@ function openTradeModal() {
 
     renderSelectedList();
 
+    const largeWarning =
+    document.getElementById('tradeLargeTradeWarning');
+
+    largeWarning.style.display =
+        selectedIds.size > 10 ? 'block' : 'none';
+
     document
     .getElementById('tradeModalOverlay')
     .classList.add('visible');
@@ -1133,6 +1178,20 @@ document
     )
     .forEach(cb => cb.checked = false);
 
+    const largeWarning =
+    document.getElementById('tradeLargeTradeWarning');
+    largeWarning.style.display =
+        selectedIds.size > 10 ? 'block' : 'none';
+
+    const isGiftChecked =
+    document.getElementById('tradeGift').checked;
+    const giftWarning =
+    document.getElementById('tradeGiftWarning');
+    if (isGiftChecked) {
+        giftWarning.style.display =
+            selectedIds.size > 2 ? 'block' : 'none';
+    }
+
     updateTradeBar();
     renderSelectedList();
 });
@@ -1144,13 +1203,20 @@ document
     const linkField =
     document.getElementById('tradeLinkField');
 
+    const giftWarning =
+    document.getElementById('tradeGiftWarning');
+
     if (e.target.checked) {
 
         linkField.classList.add('trade-field-hidden');
 
+        giftWarning.style.display =
+            selectedIds.size > 2 ? 'block' : 'none';
+
     } else {
 
         linkField.classList.remove('trade-field-hidden');
+        giftWarning.style.display = 'none';
     }
 });
 
@@ -1200,6 +1266,38 @@ document
 
     e.preventDefault();
 
+    // Block if warnings are visible
+    const largeWarning =
+    document.getElementById('tradeLargeTradeWarning');
+    if (largeWarning.style.display === 'block') {
+        setFormStatus(
+            'Please resolve the issue above before sending.',
+            'error'
+        );
+        return;
+    }
+
+    const giftWarning =
+    document.getElementById('tradeGiftWarning');
+    if (giftWarning.style.display === 'block') {
+        setFormStatus(
+            'Please resolve the issue above before sending.',
+            'error'
+        );
+        return;
+    }
+
+    const nameInput =
+    document.getElementById('tradeName');
+
+    const nameError =
+    document.getElementById('tradeNameError');
+
+    const name = nameInput.value.trim();
+
+    nameError.textContent = '';
+    nameInput.classList.remove('trade-input-invalid');
+
     const emailInput =
     document.getElementById('tradeEmail');
 
@@ -1210,6 +1308,14 @@ document
 
     emailError.textContent = '';
     emailInput.classList.remove('trade-input-invalid');
+
+    if (!name) {
+
+        nameError.textContent = 'Please enter your name.';
+        nameInput.classList.add('trade-input-invalid');
+        nameInput.focus();
+        return;
+    }
 
     if (!email) {
 
@@ -1246,6 +1352,7 @@ document
     document.getElementById('tradeComments').value.trim();
 
     const templateParams = {
+        user_name: name,
         user_email: email,
         recordings_list: buildRecordingsListText(),
         collection_link: isGift
@@ -1300,6 +1407,14 @@ document
         document
         .getElementById('tradeLinkField')
         .classList.remove('trade-field-hidden');
+
+        document
+        .getElementById('tradeGiftWarning')
+        .style.display = 'none';
+
+        document
+        .getElementById('tradeLargeTradeWarning')
+        .style.display = 'none';
 
         setTimeout(closeTradeModal, 1800);
 
