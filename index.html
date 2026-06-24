@@ -23,7 +23,7 @@
     href="https://fonts.googleapis.com/css2?family=Barrio&family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&display=swap"
     rel="stylesheet">
 
-    <link rel="stylesheet" href="style (o).css">
+    <link rel="stylesheet" href="style (p).css">
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
@@ -76,12 +76,40 @@
 
     <div class="controls">
 
-        <input
-            type="text"
-            id="searchInput"
-            class="search-bar"
-            placeholder="Search title, cast, notes, master..."
-        >
+        <div class="search-row">
+
+            <input
+                type="text"
+                id="searchInput"
+                class="search-bar"
+                placeholder="Search title, cast, notes, master..."
+            >
+
+            <button id="filterToggle" class="filter-toggle" type="button">
+                <i class="fa-solid fa-sliders"></i>
+                <span>Filters</span>
+                <span id="filterCount" class="filter-count"></span>
+            </button>
+
+        </div>
+
+        <div id="filterPanel" class="filter-panel">
+
+            <div class="filter-panel-inner">
+
+                <div id="filterGroups" class="filter-groups"></div>
+
+                <div class="filter-panel-footer">
+
+                    <button id="filterClear" class="filter-clear" type="button">
+                        Clear filters
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -95,7 +123,7 @@
     </span>
     <span id="tradeBarCount" class="trade-bar-count"></span>
     <span class="trade-bar-cta">
-        Start a trade
+        Initiate a trade
         <i class="fa-solid fa-arrow-right"></i>
     </span>
 </button>
@@ -189,6 +217,12 @@ let allRecordings = [];
 let activeCategory = 'all';
 let selectedIds = new Set();
 
+const activeFilters = {
+    location: new Set(),
+    format: new Set(),
+    master: new Set()
+};
+
 function formatWebDate(dateStr) {
 
     if (!dateStr) return '';
@@ -274,13 +308,13 @@ async function fetchSheetsData() {
             allRecordings.push({
 
                 id:
-                    row[0]
-                    ? row[0].toString().trim()
+                    row[1]
+                    ? row[1].toString().trim()
                     : '',
 
                 title:
-                    row[1]
-                    ? row[1].toString().trim()
+                    row[0]
+                    ? row[0].toString().trim()
                     : '',
 
                 location:
@@ -348,6 +382,7 @@ async function fetchSheetsData() {
             });
         }
 
+        buildFilterPanel();
         renderList(allRecordings);
 
     } catch (error) {
@@ -761,68 +796,237 @@ document
         activeCategory =
         btn.dataset.category;
 
-        document
-        .getElementById('searchInput')
-        .dispatchEvent(new Event('input'));
+        applyFiltersAndSearch();
     });
 });
 
-document
-.getElementById('searchInput')
-.addEventListener('input', function(e) {
+function buildFilterPanel() {
+
+    const groupsContainer =
+    document.getElementById('filterGroups');
+
+    const groupDefs = [
+        { key: 'location', label: 'Theatre / Venue' },
+        { key: 'format', label: 'Format' },
+        { key: 'master', label: 'Master' }
+    ];
+
+    groupsContainer.innerHTML = '';
+
+    groupDefs.forEach(def => {
+
+        const values =
+        [...new Set(
+            allRecordings
+            .map(r => r[def.key])
+            .filter(Boolean)
+        )]
+        .sort((a, b) => a.localeCompare(b));
+
+        if (!values.length) return;
+
+        const group =
+        document.createElement('div');
+
+        group.className = 'filter-group';
+
+        const heading =
+        document.createElement('p');
+
+        heading.className = 'filter-group-label';
+        heading.textContent = def.label;
+
+        group.appendChild(heading);
+
+        const optionsWrap =
+        document.createElement('div');
+
+        optionsWrap.className = 'filter-options';
+
+        values.forEach(value => {
+
+            const optionId =
+            `filter-${def.key}-${value}`
+            .replace(/[^a-zA-Z0-9-]/g, '_');
+
+            const option =
+            document.createElement('label');
+
+            option.className = 'filter-option';
+            option.setAttribute('for', optionId);
+
+            option.innerHTML = `
+                <input
+                    type="checkbox"
+                    id="${optionId}"
+                    data-filter-key="${def.key}"
+                    value="${value.replace(/"/g, '&quot;')}"
+                >
+                <span>${value}</span>
+            `;
+
+            optionsWrap.appendChild(option);
+        });
+
+        group.appendChild(optionsWrap);
+        groupsContainer.appendChild(group);
+    });
+}
+
+function updateFilterCount() {
+
+    const total =
+    activeFilters.location.size +
+    activeFilters.format.size +
+    activeFilters.master.size;
+
+    const countEl =
+    document.getElementById('filterCount');
+
+    const toggleBtn =
+    document.getElementById('filterToggle');
+
+    if (total > 0) {
+
+        countEl.textContent = total;
+        toggleBtn.classList.add('has-active-filters');
+
+    } else {
+
+        countEl.textContent = '';
+        toggleBtn.classList.remove('has-active-filters');
+    }
+}
+
+function applyFiltersAndSearch() {
 
     const query =
-    e.target.value
+    document
+    .getElementById('searchInput')
+    .value
     .toLowerCase()
     .trim();
 
-    if (!query) {
+    const hasFilters =
+    activeFilters.location.size ||
+    activeFilters.format.size ||
+    activeFilters.master.size;
 
-        renderList(allRecordings);
-        return;
+    let result = allRecordings;
+
+    if (query) {
+
+        result = result.filter(r => {
+
+            return (
+
+                (r.title &&
+                r.title.toLowerCase().includes(query))
+
+                ||
+
+                (r.cast &&
+                r.cast.toLowerCase().includes(query))
+
+                ||
+
+                (r.notes &&
+                r.notes.toLowerCase().includes(query))
+
+                ||
+
+                (r.master &&
+                r.master.toLowerCase().includes(query))
+
+                ||
+
+                (r.production &&
+                r.production.toLowerCase().includes(query))
+
+                ||
+
+                (r.location &&
+                r.location.toLowerCase().includes(query))
+
+                ||
+
+                (r.id &&
+                r.id.toLowerCase().includes(query))
+            );
+        });
     }
 
-    const filtered =
-    allRecordings.filter(r => {
+    if (hasFilters) {
 
-        return (
+        result = result.filter(r => {
 
-            (r.title &&
-            r.title.toLowerCase().includes(query))
+            const locationOk =
+            !activeFilters.location.size ||
+            activeFilters.location.has(r.location);
 
-            ||
+            const formatOk =
+            !activeFilters.format.size ||
+            activeFilters.format.has(r.format);
 
-            (r.cast &&
-            r.cast.toLowerCase().includes(query))
+            const masterOk =
+            !activeFilters.master.size ||
+            activeFilters.master.has(r.master);
 
-            ||
+            return locationOk && formatOk && masterOk;
+        });
+    }
 
-            (r.notes &&
-            r.notes.toLowerCase().includes(query))
+    renderList(result, !!(query || hasFilters));
+}
 
-            ||
+document
+.getElementById('searchInput')
+.addEventListener('input', applyFiltersAndSearch);
 
-            (r.master &&
-            r.master.toLowerCase().includes(query))
+document
+.getElementById('filterToggle')
+.addEventListener('click', function() {
 
-            ||
+    document
+    .getElementById('filterPanel')
+    .classList.toggle('open');
 
-            (r.production &&
-            r.production.toLowerCase().includes(query))
+    this.classList.toggle('open');
+});
 
-            ||
+document
+.getElementById('filterGroups')
+.addEventListener('change', function(e) {
 
-            (r.location &&
-            r.location.toLowerCase().includes(query))
+    if (e.target.type !== 'checkbox') return;
 
-            ||
+    const key = e.target.dataset.filterKey;
+    const value = e.target.value;
 
-            (r.id &&
-            r.id.toLowerCase().includes(query))
-        );
-    });
+    if (e.target.checked) {
+        activeFilters[key].add(value);
+    } else {
+        activeFilters[key].delete(value);
+    }
 
-    renderList(filtered, true);
+    updateFilterCount();
+    applyFiltersAndSearch();
+});
+
+document
+.getElementById('filterClear')
+.addEventListener('click', function() {
+
+    activeFilters.location.clear();
+    activeFilters.format.clear();
+    activeFilters.master.clear();
+
+    document
+    .querySelectorAll('#filterGroups input[type="checkbox"]')
+    .forEach(cb => cb.checked = false);
+
+    updateFilterCount();
+    applyFiltersAndSearch();
 });
 
 function renderSelectedList() {
