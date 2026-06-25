@@ -23,7 +23,7 @@
     href="https://fonts.googleapis.com/css2?family=Barrio&family=Bebas+Neue&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&display=swap"
     rel="stylesheet">
 
-    <link rel="stylesheet" href="style (q).css">
+    <link rel="stylesheet" href="style (r).css">
 
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
@@ -38,12 +38,6 @@
 </head>
 
 <body>
-<nav class="top-nav">
-    <a class="nav-link nav-anchor" href="indexq.html">List</a>
-    <a class="nav-link nav-anchor" href="#about-me">About Me</a>
-    <a class="nav-link nav-anchor" href="#trade-rules">Trade Rules</a>
-    <a class="nav-link nav-anchor" href="#wants">Wants</a>
-</nav>    
 
 <div class="container">
 
@@ -52,11 +46,82 @@
         <h1>Myopia's Trading List</h1>
 
         <p>
-            Welcome to my trading list, a brand new webside I made to automatise the process as much as possible as well as to work on my Java skills.<br>
-            If you don't see any content below the search bar <a href="issues">click here</a>
+            Welcome to my trading list, a brand new website I made to automate the process of trading as much as possible as well as to work on my webmaking skills.<br>
+            If you don't see any content below the search bar <a href="issues.html" class="header-link">click here</a>
         </p>
 
     </header>
+
+    <div class="info-sections">
+
+        <details class="info-accordion">
+            <summary class="info-accordion-summary">
+                <span><i class="fa-solid fa-circle-info"></i> About & Contact</span>
+                <i class="fa-solid fa-chevron-down info-chevron"></i>
+            </summary>
+            <div class="info-accordion-body">       
+                <div class="info-contact-row">
+                    <span><i class="fa-brands fa-reddit"></i> <a href="https://www.reddit.com/u/myopia779/s/phVBIJj4SQ" target="_blank">u/myopia779</a></span>
+                    <span><i class="fa-solid fa-envelope"></i> <a href="mailto:myopia779@gmail.com">myopia779@gmail.com</a></span>
+                </div>
+                <ul class="info-list">
+                    <li><strong>I'm not on Encora yet</strong> despite being a very dedicated trader (who tries their best to follow all the rules ofc), the biggest gift would be if I could get an invite eventually (to complete all my bootlegs info, find specific recording without losing my soul in the process etc.)</li>
+                    <li>I trade pro-shots, bootlegs and concerts, <strong>I'm not interested in audios</strong> (unless it's a german/czech/slovak/polish production or a concert).</li>
+                    <li>I try to trade only with originals, but some rips may be present on my list as well – I try to label them as such. I keep them there so I have my whole collection in one place. If you find any that isn't labeled please inform me &lt;3</li>
+                    <li>Transfers are done typically throught Mega, Google Drive or Transfer.it, but I don't mind alternatives.</li>
+                    <li>If you see any <strong>wrong labeled recordings or missing info</strong> – please reach out to me</li>
+                </ul>
+            </div>
+        </details>
+
+        <details class="info-accordion">
+            <summary class="info-accordion-summary">
+                <span><i class="fa-solid fa-scroll"></i> Trading Rules</span>
+                <i class="fa-solid fa-chevron-down info-chevron"></i>
+            </summary>
+            <div class="info-accordion-body">
+                <ul class="info-list">
+                    <li>Please have a list of your own before requesting a trade – a Google Sheet, document, anything is fine –<br>
+                        <strong>I don't trade for recordings without at least semi-complete info!</strong></li>
+                    <li>I do <strong>not have Encora</strong>, so please don't send Encora collections as your list.</li>
+                    <li>I gift a maximum of <strong>2 recordings</strong>. If you have nothing to trade, please tick the gift box in the form.</li>
+                    <li>I don't usually do trades larger than <strong>10 recordings</strong> at once — if you really wish to do a trade that large, contact me directly.</li>
+                    <li>NFT recordings are marked on the list and cannot be requested.</li>
+                    <li>Please allow a few days for me to respond – if I take more than two days feel free to reach out!</li>
+                </ul>
+            </div>
+        </details>
+
+        <details class="info-accordion">
+            <summary class="info-accordion-summary">
+                <span><i class="fa-solid fa-star"></i> Wants</span>
+                <i class="fa-solid fa-chevron-down info-chevron"></i>
+            </summary>
+            <div class="info-accordion-body">
+                <p>These are recordings I'm actively looking for:</p>
+                <ul class="info-list wants-list">
+                    <li>Any <strong>Cabaret</strong> I don’t have yet</li>
+                        <ul>
+                            <li>Bonus points if it’s the ukrainian one</li>
+                            <li>Or with Cruz St. James as Emcee</li>
+                            <li>I’m not even sure whether these exist, if you have Encora and check I would be eternally grateful</li>
+                        </ul>
+                    <li>Pretty much anything with <strong>Aaron Tveit</strong> or <strong>Stephanie J. Block</strong></li>
+                    <li><strong>Little Shop of Horrors</strong> (with Jeremy Jordan, Chelsea Turbin and Christian Borle)</li>
+                    <li>Literally anything with <strong>subtitles</strong> (or only subtitles to smth I already own)</li>
+                    <li><strong>Hamilton</strong> (with Nicholas Christopher)</li>
+                    <li><strong>Bonnie and Clyde</strong> (with Jeremy Jordan)</li>
+                    <li><strong>The Book of Mormon</strong> (with Andrew Rannels)</li>
+                    <li><strong>Falsettos</strong> proshot (with subtitles?)</li>
+                    <li><strong>Wicked</strong> (with Stephanie J. Block or Aaron Tveit)</li>
+                    <li>Anything better quality of <strong>The Magician's Elephant</strong></li>
+                    <li><strong>The Lost Boys</strong> (once there are some off NFT)</li>
+                    <li>Any Czech plays/musicals (yeah, I don't expect anyone to really have those, but trying my luck)</li>
+                </ul>
+            </div>
+        </details>
+
+    </div>
     
 
     <div class="controls">
@@ -92,6 +157,15 @@
                 <div id="filterGroups" class="filter-groups"></div>
 
                 <div class="filter-panel-footer">
+
+                    <label class="filter-option filter-giftable-footer">
+                        <input
+                            type="checkbox"
+                            id="filter-giftable-only"
+                            data-filter-key="giftableOnly"
+                        >
+                        <span>Giftable only</span>
+                    </label>
 
                     <button id="filterClear" class="filter-clear" type="button">
                         Clear filters
@@ -231,7 +305,8 @@ let selectedIds = new Set();
 const activeFilters = {
     location: new Set(),
     format: new Set(),
-    master: new Set()
+    master: new Set(),
+    giftableOnly: false
 };
 
 function formatWebDate(dateStr) {
@@ -502,7 +577,7 @@ function createSection(items, expandGroups) {
 
     const groups = new Map(
         [...groupsRaw.entries()].sort((a, b) =>
-            a[0].localeCompare(b[0], undefined, { sensitivity: 'base' })
+            a[0].localeCompare(b[0], 'en', { sensitivity: 'base' })
         )
     );
 
@@ -530,10 +605,7 @@ function createSection(items, expandGroups) {
             </div>
             <div class="title-group-right">
                 <span class="title-group-count">
-                    ${groupItems.length}
-                    ${groupItems.length === 1
-                        ? 'recording'
-                        : 'recordings'}
+                    (${groupItems.length})
                 </span>
                 <div class="title-group-chevron">
                     <i class="fa-solid fa-chevron-down"></i>
@@ -550,10 +622,15 @@ function createSection(items, expandGroups) {
 
         groupItems.forEach(item => {
 
+            const isNFT =
+            item.incomplete &&
+            item.incomplete.toUpperCase().includes('NFT');
+
             const card =
             document.createElement('div');
 
-            card.className = 'show-card';
+            card.className =
+            'show-card' + (isNFT ? ' nft-card' : '');
 
             card.innerHTML = `
 
@@ -563,12 +640,14 @@ function createSection(items, expandGroups) {
 
                     <div class="title-line">
 
-                        <input
+                        ${isNFT
+                            ? `<span class="show-checkbox-placeholder" title="Not For Trade"></span>`
+                            : `<input
                             type="checkbox"
                             class="show-checkbox"
                             data-id="${item.id}"
                             ${selectedIds.has(item.id) ? 'checked' : ''}
-                        >
+                        >`}
 
                         <h3 class="show-title">
                             ${item.title}
@@ -595,15 +674,20 @@ function createSection(items, expandGroups) {
                                 `
                                 : ''}
 
-                            ${item.incomplete &&
-                            item.incomplete
-                            .toLowerCase() !== 'false'
+                            ${isNFT
                                 ? `
-                                <span class="tag missing-tag">
-                                    ${item.incomplete}
+                                <span class="tag nft-tag">
+                                    NFT
                                 </span>
                                 `
-                                : ''}
+                                : item.incomplete &&
+                                  item.incomplete.toLowerCase() !== 'false'
+                                    ? `
+                                    <span class="tag missing-tag">
+                                        ${item.incomplete}
+                                    </span>
+                                    `
+                                    : ''}
 
                         </div>
 
@@ -785,6 +869,14 @@ document
 
     const id = e.target.dataset.id;
 
+    // Guard: never allow NFT recordings to be selected
+    const item = allRecordings.find(r => r.id === id);
+    if (item && item.incomplete &&
+        item.incomplete.toUpperCase().includes('NFT')) {
+        e.target.checked = false;
+        return;
+    }
+
     if (e.target.checked) {
         selectedIds.add(id);
     } else {
@@ -860,7 +952,7 @@ function buildFilterPanel() {
             .map(r => r[def.key])
             .filter(Boolean)
         )]
-        .sort((a, b) => a.localeCompare(b));
+        .sort((a, b) => a.localeCompare(b, 'en'));
 
         if (!values.length) return;
 
@@ -917,7 +1009,8 @@ function updateFilterCount() {
     const total =
     activeFilters.location.size +
     activeFilters.format.size +
-    activeFilters.master.size;
+    activeFilters.master.size +
+    (activeFilters.giftableOnly ? 1 : 0);
 
     const countEl =
     document.getElementById('filterCount');
@@ -949,7 +1042,8 @@ function applyFiltersAndSearch() {
     const hasFilters =
     activeFilters.location.size ||
     activeFilters.format.size ||
-    activeFilters.master.size;
+    activeFilters.master.size ||
+    activeFilters.giftableOnly;
 
     let result = allRecordings;
 
@@ -1011,11 +1105,19 @@ function applyFiltersAndSearch() {
             !activeFilters.master.size ||
             activeFilters.master.has(r.master);
 
-            return locationOk && formatOk && masterOk;
+            const giftableOk =
+            !activeFilters.giftableOnly ||
+            (()=>{
+                const gs = (r.giftStatus || '').toLowerCase().trim();
+                // pass if empty/unknown, or explicitly giftable but NOT ungiftable
+                return !gs || gs === 'unknown' || (gs.includes('giftable') && !gs.includes('ungiftable'));
+            })();
+
+            return locationOk && formatOk && masterOk && giftableOk;
         });
     }
 
-    renderList(result, !!(query || hasFilters));
+    renderList(result, false);
 }
 
 document
@@ -1053,16 +1155,28 @@ document
 });
 
 document
+.getElementById('filter-giftable-only')
+.addEventListener('change', function(e) {
+    activeFilters.giftableOnly = e.target.checked;
+    updateFilterCount();
+    applyFiltersAndSearch();
+});
+
+document
 .getElementById('filterClear')
 .addEventListener('click', function() {
 
     activeFilters.location.clear();
     activeFilters.format.clear();
     activeFilters.master.clear();
+    activeFilters.giftableOnly = false;
 
     document
     .querySelectorAll('#filterGroups input[type="checkbox"]')
     .forEach(cb => cb.checked = false);
+
+    const giftableCb = document.getElementById('filter-giftable-only');
+    if (giftableCb) giftableCb.checked = false;
 
     updateFilterCount();
     applyFiltersAndSearch();
@@ -1337,6 +1451,20 @@ document
 
         setFormStatus(
             'You need to select at least one recording first.',
+            'error'
+        );
+        return;
+    }
+
+    // Guard: block submission if any selected recording is NFT
+    const nftItems = [...selectedIds]
+        .map(id => allRecordings.find(r => r.id === id))
+        .filter(item => item && item.incomplete &&
+            item.incomplete.toUpperCase().includes('NFT'));
+
+    if (nftItems.length) {
+        setFormStatus(
+            'Your selection contains an NFT (Not For Trade) recording. Please remove it before sending.',
             'error'
         );
         return;
