@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oops — Myopia's Trading List</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barrio&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style (q).css">
+
+    <style>
+        .issues-wrap{
+            max-width:640px;
+            margin:80px auto;
+            padding:0 24px 80px;
+        }
+
+        .issues-back{
+            display:inline-flex;
+            align-items:center;
+            gap:7px;
+            color:var(--muted);
+            text-decoration:none;
+            font-size:.82rem;
+            font-weight:600;
+            text-transform:uppercase;
+            letter-spacing:.4px;
+            margin-bottom:48px;
+            transition:.15s ease;
+        }
+
+        .issues-back:hover{
+            color:var(--accent);
+        }
+
+        .issues-eyebrow{
+            font-size:.78rem;
+            font-weight:700;
+            letter-spacing:.6px;
+            text-transform:uppercase;
+            color:var(--accent);
+            margin:0 0 10px;
+        }
+
+        .issues-title{
+            font-family:"Barrio", system-ui;
+            font-size:3rem;
+            font-weight:400;
+            color:var(--text);
+            margin:0 0 8px;
+            line-height:1.1;
+        }
+
+        .issues-subtitle{
+            color:var(--muted);
+            font-size:1rem;
+            font-weight:300;
+            line-height:1.7;
+            margin:0 0 40px;
+        }
+
+        .issues-card{
+            background:var(--card);
+            border:1px solid var(--border);
+            border-radius:18px;
+            padding:28px 28px 24px;
+            margin-bottom:16px;
+        }
+
+        .issues-card-title{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:.82rem;
+            font-weight:700;
+            text-transform:uppercase;
+            letter-spacing:.4px;
+            color:var(--accent);
+            margin:0 0 12px;
+        }
+
+        .issues-card-title i{
+            font-size:.85rem;
+        }
+
+        .issues-card p{
+            margin:0 0 10px;
+            color:var(--muted);
+            font-size:.92rem;
+            line-height:1.7;
+            font-weight:300;
+        }
+
+        .issues-card p:last-child{
+            margin-bottom:0;
+        }
+
+        .issues-card strong{
+            color:var(--text);
+            font-weight:600;
+        }
+
+        .issues-btn{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            margin-top:14px;
+            padding:10px 20px;
+            background:var(--accent);
+            color:#0b1016;
+            font-family:"Fraunces", serif;
+            font-size:.85rem;
+            font-weight:700;
+            text-decoration:none;
+            border-radius:50px;
+            transition:.15s ease;
+            letter-spacing:.2px;
+        }
+
+        .issues-btn:hover{
+            opacity:.85;
+            transform:translateY(-1px);
+        }
+
+        .issues-contact-row{
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            margin-top:6px;
+        }
+
+        .issues-contact-item{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            color:var(--muted);
+            font-size:.9rem;
+        }
+
+        .issues-contact-item i{
+            color:var(--accent);
+            width:16px;
+            text-align:center;
+            font-size:.88rem;
+        }
+
+        .issues-contact-item a{
+            color:var(--accent);
+            text-decoration:none;
+            transition:.15s ease;
+        }
+
+        .issues-contact-item a:hover{
+            text-decoration:underline;
+            text-underline-offset:3px;
+        }
+
+        .issues-divider{
+            border:none;
+            border-top:1px solid var(--border);
+            margin:10px 0 16px;
+        }
+
+        .issues-trade-steps{
+            list-style:none;
+            padding:0;
+            margin:12px 0 0;
+            counter-reset:steps;
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+        }
+
+        .issues-trade-steps li{
+            counter-increment:steps;
+            display:flex;
+            align-items:flex-start;
+            gap:12px;
+            color:var(--muted);
+            font-size:.9rem;
+            line-height:1.6;
+            font-weight:300;
+        }
+
+        .issues-trade-steps li::before{
+            content:counter(steps);
+            display:inline-flex;
+            align-items:center;
+            justify-content:center;
+            min-width:24px;
+            height:24px;
+            border-radius:50%;
+            background:rgba(255,138,61,.15);
+            border:1px solid rgba(255,138,61,.3);
+            color:var(--accent);
+            font-size:.75rem;
+            font-weight:700;
+            flex-shrink:0;
+            margin-top:1px;
+        }
+
+        .issues-trade-steps strong{
+            font-weight:600;
+        }
+
+        .issues-contact-value{
+            color:var(--accent);
+        }
+
+        @media(min-width:640px){
+            .issues-wrap{
+                margin-top:120px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="issues-wrap">
+
+    <a href="index.html" class="issues-back">
+        <i class="fa-solid fa-arrow-left"></i>
+        Back to the list
+    </a>
+
+    <p class="issues-eyebrow">Something went wrong</p>
+    <h1 class="issues-title">Can't load the list?</h1>
+    <p class="issues-subtitle">
+        Sorry about that – my list is loaded from a Google Spreadsheet and occasionally
+        the connection fails or the page doesn't load correctly. Here's what you can do :)
+    </p>
+
+    <!-- SPREADSHEET CARD -->
+    <div class="issues-card">
+        <p class="issues-card-title">
+            <i class="fa-solid fa-table-cells"></i>
+            <strong>View the spreadsheet directly</strong>
+        </p>
+        <p>
+            All my recordings are written down in a Google Sheet. If the website isn't loading, you can
+            browse it directly – it has all the same information.
+        </p>
+        <a
+            class="issues-btn"
+            href="https://docs.google.com/spreadsheets/d/1qs2C_gT7mNk56-DPunOGR170lRL3_h3Ds2fMWiG-TN0/edit?gid=1785647552#gid=1785647552"
+            target="_blank"
+        >
+            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            Open the spreadsheet
+        </a>
+    </div>
+
+    <!-- CONTACT CARD -->
+    <div class="issues-card">
+        <p class="issues-card-title">
+            <i class="fa-solid fa-envelope"></i>
+            <strong>Message me</strong>
+        </p>
+        <p>You can also reach me directly – I'm happy to answer questions or sort out a trade manually.</p>
+        <div class="issues-contact-row">
+            <div class="issues-contact-item">
+                <i class="fa-brands fa-reddit"></i>
+                    <a href="https://www.reddit.com/u/myopia779/s/phVBIJj4SQ" class="issues-contact-value" target="_blank">u/myopia779</a>
+            </div>
+            <div class="issues-contact-item">
+                <i class="fa-solid fa-envelope"></i>
+                    <a href="mailto:myopia779@gmail.com" class="issues-contact-value">
+                        myopia779@gmail.com
+                    </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- TRADE WITHOUT THE SITE CARD -->
+    <div class="issues-card">
+        <p class="issues-card-title">
+            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            <strong>Trade without the website</strong>
+        </p>
+        <p>
+            Don't want to wait for the site to work? No problem – you can always reach out to me directly
+            to set up a trade:
+        </p>
+        <hr class="issues-divider">
+        <ol class="issues-trade-steps">
+            <li>
+                <span>Send me a message on Reddit or email (I will probably respond sooner on Reddit tho).
+            </li>
+            <li>
+                <span>Tell me which recordings you're interested in – title, production, cast or date, please be specific.
+            </li>
+            <li>
+                <span>Include a link to your own list – a Google Sheet, document, or anything like that. If you want a gift, just say so (max 2 recordings please).</span>
+            </li>
+            <li>
+                <span>I'll get back to you as soon as I can – usually within a few days!
+            </li>
+        </ol>
+    </div>
+
+</div>
+
+</body>
+</html>
