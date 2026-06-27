@@ -25,6 +25,13 @@
 
     <link rel="stylesheet" href="style (r).css">
 
+    <style>
+        .ungiftable-row {
+            background-color: rgba(220, 38, 38, 0.12);
+            border-radius: 12px;
+        }
+    </style>
+
     <!-- FONT AWESOME -->
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -1206,10 +1213,16 @@ function renderSelectedList() {
 
         if (!item) return;
 
+        const isUngiftable =
+        item.giftStatus &&
+        item.giftStatus.toLowerCase().includes('ungiftable');
+
         const row =
         document.createElement('div');
 
         row.className = 'trade-selected-row';
+        row.dataset.id = item.id;
+        if (isUngiftable) row.dataset.ungiftable = 'true';
 
         const labelParts = [
             item.title,
@@ -1234,6 +1247,32 @@ function renderSelectedList() {
     });
 }
 
+function updateUngiftableHighlights(forceWarningActive) {
+
+    const giftChecked =
+    document.getElementById('tradeGift').checked;
+
+    const giftWarning =
+    document.getElementById('tradeGiftWarning');
+
+    const warningActive =
+    forceWarningActive !== undefined
+        ? forceWarningActive
+        : (giftChecked &&
+           giftWarning.style.display === 'block' &&
+           giftWarning.textContent.toLowerCase().includes('ungiftable'));
+
+    document
+    .querySelectorAll('#tradeSelectedList .trade-selected-row')
+    .forEach(row => {
+        if (warningActive && row.dataset.ungiftable === 'true') {
+            row.classList.add('ungiftable-row');
+        } else {
+            row.classList.remove('ungiftable-row');
+        }
+    });
+}
+
 function openTradeModal() {
 
     renderSelectedList();
@@ -1243,6 +1282,35 @@ function openTradeModal() {
 
     largeWarning.style.display =
         selectedIds.size > 10 ? 'block' : 'none';
+
+    // Re-evaluate gift warning based on current gift checkbox state
+    const giftChecked =
+    document.getElementById('tradeGift').checked;
+    const giftWarning =
+    document.getElementById('tradeGiftWarning');
+
+    if (giftChecked) {
+        const hasUngiftable = [...selectedIds]
+            .map(id => allRecordings.find(r => r.id === id))
+            .some(item => item &&
+                item.giftStatus &&
+                item.giftStatus.toLowerCase().includes('ungiftable'));
+        if (hasUngiftable) {
+            giftWarning.style.display = 'block';
+            giftWarning.textContent =
+                'Your selection contains an ungiftable recording. Please remove it before requesting a gift.';
+        } else if (selectedIds.size > 2) {
+            giftWarning.style.display = 'block';
+            giftWarning.textContent =
+                'I gift a maximum of 2 recordings. Please remove some from your selection.';
+        } else {
+            giftWarning.style.display = 'none';
+        }
+    } else {
+        giftWarning.style.display = 'none';
+    }
+
+    updateUngiftableHighlights();
 
     document
     .getElementById('tradeModalOverlay')
@@ -1326,6 +1394,7 @@ document
 
     updateTradeBar();
     renderSelectedList();
+    updateUngiftableHighlights();
 });
 
 document
@@ -1352,6 +1421,7 @@ document
             giftWarning.style.display = 'block';
             giftWarning.textContent =
                 'Your selection contains an ungiftable recording. Please remove it before requesting a gift.';
+            updateUngiftableHighlights(true);
             return;
         }
 
@@ -1365,10 +1435,13 @@ document
             giftWarning.style.display = 'none';
         }
 
+        updateUngiftableHighlights();
+
     } else {
 
         linkField.classList.remove('trade-field-hidden');
         giftWarning.style.display = 'none';
+        updateUngiftableHighlights();
     }
 });
 
@@ -1417,6 +1490,26 @@ document
 .addEventListener('submit', function(e) {
 
     e.preventDefault();
+
+    // Hard guards — re-check regardless of visible warnings
+    if (selectedIds.size > 10) {
+        setFormStatus(
+            'You have more than 10 recordings selected. Please remove some before sending.',
+            'error'
+        );
+        return;
+    }
+
+    const isGiftAtSubmit =
+    document.getElementById('tradeGift').checked;
+
+    if (isGiftAtSubmit && selectedIds.size > 2) {
+        setFormStatus(
+            'Gift requests are limited to 2 recordings. Please remove some before sending.',
+            'error'
+        );
+        return;
+    }
 
     // Block if warnings are visible
     const largeWarning =
@@ -1509,8 +1602,7 @@ document
     }
 
     // Guard: block gift submission if any selected recording is ungiftable
-    const isGiftChecked =
-    document.getElementById('tradeGift').checked;
+    const isGiftChecked = isGiftAtSubmit;
 
     if (isGiftChecked) {
         const ungiftableItems = [...selectedIds]
@@ -1572,7 +1664,7 @@ document
     ]).then(() => {
 
         setFormStatus(
-            'Request sent! Check your inbox for confirmation.',
+            'Request sent! Check your inbox for confirmation — it may land in your spam folder.',
             'success'
         );
 
