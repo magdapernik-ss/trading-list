@@ -1306,8 +1306,22 @@ document
     const giftWarning =
     document.getElementById('tradeGiftWarning');
     if (isGiftChecked) {
-        giftWarning.style.display =
-            selectedIds.size > 2 ? 'block' : 'none';
+        const hasUngiftable = [...selectedIds]
+            .map(id => allRecordings.find(r => r.id === id))
+            .some(item => item &&
+                item.giftStatus &&
+                item.giftStatus.toLowerCase().includes('ungiftable'));
+        if (hasUngiftable) {
+            giftWarning.style.display = 'block';
+            giftWarning.textContent =
+                'Your selection contains an ungiftable recording. Please remove it before requesting a gift.';
+        } else if (selectedIds.size > 2) {
+            giftWarning.style.display = 'block';
+            giftWarning.textContent =
+                'I gift a maximum of 2 recordings. Please remove some from your selection.';
+        } else {
+            giftWarning.style.display = 'none';
+        }
     }
 
     updateTradeBar();
@@ -1326,10 +1340,30 @@ document
 
     if (e.target.checked) {
 
+        // Block if any selected recording is ungiftable
+        const ungiftableItems = [...selectedIds]
+            .map(id => allRecordings.find(r => r.id === id))
+            .filter(item => item &&
+                item.giftStatus &&
+                item.giftStatus.toLowerCase().includes('ungiftable'));
+
+        if (ungiftableItems.length) {
+            e.target.checked = false;
+            giftWarning.style.display = 'block';
+            giftWarning.textContent =
+                'Your selection contains an ungiftable recording. Please remove it before requesting a gift.';
+            return;
+        }
+
         linkField.classList.add('trade-field-hidden');
 
-        giftWarning.style.display =
-            selectedIds.size > 2 ? 'block' : 'none';
+        if (selectedIds.size > 2) {
+            giftWarning.style.display = 'block';
+            giftWarning.textContent =
+                'I gift a maximum of 2 recordings. Please remove some from your selection.';
+        } else {
+            giftWarning.style.display = 'none';
+        }
 
     } else {
 
@@ -1360,7 +1394,7 @@ function buildRecordingsListText() {
             formatWebDate(item.date)
         ].filter(Boolean);
 
-        lines.push('- ' + parts.join(' — '));
+        lines.push('- ' + item.id + ' ' + parts.join(' — '));
     });
 
     return lines.join('\n');
@@ -1474,8 +1508,27 @@ document
         return;
     }
 
-    const isGift =
+    // Guard: block gift submission if any selected recording is ungiftable
+    const isGiftChecked =
     document.getElementById('tradeGift').checked;
+
+    if (isGiftChecked) {
+        const ungiftableItems = [...selectedIds]
+            .map(id => allRecordings.find(r => r.id === id))
+            .filter(item => item &&
+                item.giftStatus &&
+                item.giftStatus.toLowerCase().includes('ungiftable'));
+
+        if (ungiftableItems.length) {
+            setFormStatus(
+                'Your selection contains an ungiftable recording. Please remove it before sending a gift request.',
+                'error'
+            );
+            return;
+        }
+    }
+
+    const isGift = isGiftChecked;
 
     const collectionLink =
     document.getElementById('tradeLink').value.trim();
