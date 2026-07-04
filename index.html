@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="eng">
+<html lang="en">
 <head>
 
     <meta charset="UTF-8">
@@ -9,7 +9,11 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Myopia Trading List</title>
+    <title>Myopia's Trading List</title>
+
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" href="favicon-64.png">
 
     <!-- GOOGLE FONTS -->
     <link rel="preconnect"
@@ -36,6 +40,10 @@
     <link rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
+    <!-- FLAG ICONS (real flag pictures, works everywhere incl. Windows) -->
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.2.3/css/flag-icons.min.css">
+
     <!-- PAPAPARSE -->
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
@@ -54,6 +62,7 @@
 
         <p>
             Welcome to my trading list, a brand new website I made to automate the process of trading as much as possible!<br>
+            The subtitle function is still being worked on, please report any issues. Trying to think of a better way to display my wants, taking suggestions :)<br><br>
             If you don't see any content below the search bar  <a href="issues.html" class="header-link">click here</a>
         </p>
 
@@ -103,7 +112,7 @@
                 <i class="fa-solid fa-chevron-down info-chevron"></i>
             </summary>
             <div class="info-accordion-body">
-                <p>These are recordings I'm actively looking for:</p>
+                <p class="text-accent">These are recordings I'm actively looking for:</p>
                 <ul class="info-list wants-list">
                     <li><strong>Cabaret</strong> (any production I don’t have yet, not different casts of productions I already own), especially these:</li>
                         <ul>
@@ -114,17 +123,68 @@
                     <li><strong>Hamilton</strong> (with Nicholas Christopher)</li>
                     <li><strong>Chess | Newcastle, UK Tour | 2010, September | VOB + smalls (5.28 GB)</strong><br>
 Cast: Daniel Koek (Anatoly), James Fox (Freddie), Shona White (Florence), Poppy Tierney (Svetlana), David Erik (Arbiter), Steve Varnom (Molokov), James Graeme (Walter)</li>
-                    <li><strong>Chess | Dresden | 2008, June 27 | VOB + smalls (4.12 GB) | Proshot</strong><br>
-Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Chris Murray (Frederick Trumper), Matthias Otte (Der Schiedsrichter), Maria Staszak (Svetlana Sergievsky), Gerd Wiemer (Alexander Molokov), Marcus Günzel (Walter de Courcey), Constanze Eschrig, Inka Lange und Jeannette Oswald (Popchor), Martin Gebhardt und Tanja Höft (Reporter), Roland Pietzsch (Bürgermeister), Dag Hornschild (Viigand)</li>
-                    <li><strong>The Lost Boys</strong> (once there are some off NFT)</li>
                     <li>Any Czech plays/musicals (yeah, I don't expect anyone to really have those, but trying my luck)</li>
                 </ul>
-                <p>These are just some, for a full list of my wants see my <a href="https://encora.it/traders/myopia779/wants" class="header-link" target="_blank">Encora</a>, or <a href="https://docs.google.com/spreadsheets/d/1HYydYbL3iKz9MReUI3I6xTZgJzKNRJOYjmumkQ-R2mE/edit?gid=354359985#gid=354359985" class="header-link" target="_blank" >list of wants</a> (I try to keep it more updated, will link it to this website soon promise haha)</p>
+                <p class="text-accent">These are just some, for a full list of my wants see my <a href="https://encora.it/traders/myopia779/wants" class="header-link" target="_blank">Encora</a>, or summary below – may not be 100% up to date, the most precise one is on Encora, too lazy to update as often here, red ones are NFT, if it doesnt show or you want full info see <a href="https://docs.google.com/spreadsheets/d/1HYydYbL3iKz9MReUI3I6xTZgJzKNRJOYjmumkQ-R2mE/view?gid=354359985#gid=354359985" class="header-link" target="_blank" >here</a>:</p>
+
+                <ul id="wantsSheetList" class="info-list wants-list wants-sheet-list"></ul>
             </div>
         </details>
 
     </div>
     
+
+    <div class="subtitles-panel">
+
+        <div class="subtitles-panel-header">
+
+            <i class="fa-solid fa-closed-captioning"></i>
+
+            <div class="subtitles-panel-copy">
+                <p class="subtitles-panel-title">Looking for subtitles?</p>
+            </div>
+
+            <label class="toggle-switch-wrap">
+                <input type="checkbox" id="subtitlesWantToggle">
+            </label>
+
+        </div>
+
+        <div id="subtitlesLangWrap" class="subtitles-lang-wrap">
+
+            <div id="subtitlesLangOptions" class="subtitles-lang-options">
+
+                <label class="subtitles-lang-option subtitles-lang-all" for="subtitle-lang-all">
+                    <input type="checkbox" id="subtitle-lang-all">
+                    <span>All languages</span>
+                </label>
+
+            </div>
+
+            <p class="subtitles-panel-note" id="subtitlesPanelNote">
+                <span class="subtitles-panel-note-mark">*</span>
+                Either keep scrolling as usual — recordings will show a subtitles badge no matter what other filters are active — or press “Filter” to show only those with desired subtitles.
+                <br><br>
+                Only want the subtitles, not the whole recording? Click a title's subtitles badge to add just its subtitles to your request (click again to remove) — they'll show up with a blue background in your request/trade so it's clear they're subtitles-only, and you can grab as many as you like, they don't count toward your recording limit. If you request the full recording instead, its subtitles are naturally included, so they can't be requested separately in that case.
+                <br><br>
+                I give out subtitles gladly and don't ask for anything in return — but if you'd like to toss in a gift for them anyway, I certainly won't say no :)
+            </p>
+
+            <div class="subtitles-panel-actions">
+
+                <button id="subtitlesResetBtn" class="subtitles-reset-btn" type="button">
+                    Reset
+                </button>
+
+                <button id="subtitlesShowBtn" class="subtitles-show-btn" type="button">
+                    Filter
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
     <div class="controls">
 
@@ -168,7 +228,7 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
                                 id="filter-giftable-only"
                                 data-filter-key="giftableOnly"
                             >
-                            <span>Giftable</span>
+                            <span>Giftable only</span>
                         </label>
 
                         <label class="filter-option filter-giftable-footer">
@@ -176,7 +236,7 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
                                 type="checkbox"
                                 id="filter-video-only"
                             >
-                            <span>Video</span>
+                            <span>Video only</span>
                         </label>
 
                         <label class="filter-option filter-giftable-footer">
@@ -184,7 +244,7 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
                                 type="checkbox"
                                 id="filter-audio-only"
                             >
-                            <span>Audio</span>
+                            <span>Audio only</span>
                         </label>
 
                     </div>
@@ -231,7 +291,7 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
         </div>
 
         <p class="trade-modal-sub">
-            Remove any recordings you didn't mean to include:
+            Remove any recordings or subtitles you didn't mean to include:
         </p>
 
         <div id="tradeSelectedList" class="trade-selected-list"></div>
@@ -241,7 +301,7 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
             Reddit: <strong>u/myopia779</strong> &nbsp;|&nbsp; Email: <strong>myopia779@gmail.com</strong>
         </div>
 
-        <form id="tradeForm" class="trade-form">
+        <form id="tradeForm" class="trade-form" novalidate>
 
             <label class="trade-field">
                 <span>Name</span>
@@ -265,13 +325,13 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
                 <span id="tradeEmailError" class="trade-field-error"></span>
             </label>
 
-            <label class="trade-checkbox-field">
+            <div class="trade-checkbox-field">
                 <input
                     type="checkbox"
                     id="tradeGift"
                 >
                 <span>Tick if you're asking for a gift</span>
-            </label>
+            </div>
 
             <div id="tradeGiftWarning" class="trade-warning trade-warning-gap" style="display:none;">
                 I gift a maximum of 2 recordings. Please remove some from your selection.
@@ -284,6 +344,7 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
                     id="tradeLink"
                     placeholder="Encora, Google Sheet, Document, One Drive, etc."
                 >
+                <span id="tradeLinkError" class="trade-field-error"></span>
             </div>
 
             <label class="trade-field">
@@ -312,6 +373,9 @@ Cast: Femke Soetenga (Florence Vassy), Christian Grygas (Anatoly Sergievsky), Ch
 const REAL_DATA_URL =
 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSNr9mFlX967HrZ8rtrQ3dkUXn1AVYit1i8p44R3tLht53YDGpWl8ydsrRLOkp6Zrw9BZ2g_gZ1nmtu/pub?gid=224558958&single=true&output=csv';
 
+const WANTS_DATA_URL =
+'https://docs.google.com/spreadsheets/d/e/2PACX-1vSNr9mFlX967HrZ8rtrQ3dkUXn1AVYit1i8p44R3tLht53YDGpWl8ydsrRLOkp6Zrw9BZ2g_gZ1nmtu/pub?gid=354359985&single=true&output=csv';
+
 const EMAILJS_PUBLIC_KEY = '53f0mRlvHWe11Y7Xx';
 const EMAILJS_SERVICE_ID = 'service_zpa2m63';
 const EMAILJS_TEMPLATE_USER = 'template_7di2w74';
@@ -322,6 +386,10 @@ emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 let allRecordings = [];
 let activeCategory = 'all';
 let selectedIds = new Set();
+// Recordings whose subtitles-only were requested via the badge click,
+// kept separate from selectedIds — they don't count toward the
+// recording/gift limits and are shown separately in the trade modal.
+let selectedSubtitleIds = new Set();
 
 const activeFilters = {
     tour: new Set(),
@@ -331,7 +399,9 @@ const activeFilters = {
     city: new Set(),
     mediaType: new Set(),
     performer: new Set(),
-    giftableOnly: false
+    giftableOnly: false,
+    subtitleLangs: new Set(),
+    subtitlesFilterOn: false
 };
 
 function formatWebDate(dateStr) {
@@ -592,12 +662,23 @@ async function fetchSheetsData() {
                 mediaType:
                     row[17]
                     ? row[17].toString().trim()
-                    : ''
+                    : '',
+
+                // Column W — comma separated language codes, e.g. "EN,CS"
+                subtitleLangs:
+                    row[22]
+                    ? row[22]
+                        .toString()
+                        .split(',')
+                        .map(code => code.trim().toUpperCase())
+                        .filter(Boolean)
+                    : []
 
             });
         }
 
         buildFilterPanel();
+        buildSubtitlesPanel();
         renderList(allRecordings);
 
     } catch (error) {
@@ -609,6 +690,93 @@ async function fetchSheetsData() {
                 Failed to load Google Sheets data.
             </div>
         `;
+    }
+}
+
+function escapeHtml(str) {
+
+    if (str === null || str === undefined) return '';
+
+    return str
+        .toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+// Pulls the "list of wants" tab straight from the spreadsheet and
+// renders each row as: Show (B) – Tour (C) – (D) – (F) – (R)
+async function fetchWantsList() {
+
+    const wantsListEl =
+    document.getElementById('wantsSheetList');
+
+    if (!wantsListEl) return;
+
+    try {
+
+        const response = await fetch(WANTS_DATA_URL);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const csvText = await response.text();
+
+        const parsed = Papa.parse(csvText, {
+            header: false,
+            skipEmptyLines: true
+        });
+
+        const rows = parsed.data;
+
+        const items = [];
+
+        for (let i = 1; i < rows.length; i++) {
+
+            const row = rows[i];
+
+            if (!row || !row[1]) continue;
+
+            const showName = row[1] ? row[1].toString().trim() : '';
+            const tour = row[2] ? row[2].toString().trim() : '';
+            const colD = row[3] ? row[3].toString().trim() : '';
+            const colF = row[5] ? row[5].toString().trim() : '';
+            const colRRaw = row[17] ? row[17].toString().trim() : '';
+            const colL = row[11] ? row[11].toString().trim() : '';
+
+            const isNft = /nft/i.test(colL);
+
+            const colR = colRRaw
+                ? `<a href="${escapeHtml(colRRaw)}" target="_blank" rel="noopener">${escapeHtml(colRRaw)}</a>`
+                : '';
+
+            if (!showName) continue;
+
+            const parts = [
+                tour ? escapeHtml(tour) : '',
+                colD ? escapeHtml(colD) : '',
+                colF ? escapeHtml(colF) : '',
+                colR
+            ].filter(Boolean);
+
+            const line = parts.length
+                ? `<strong>${escapeHtml(showName)}</strong> – ${parts.join(' – ')}`
+                : `<strong>${escapeHtml(showName)}</strong>`;
+
+            items.push({ line, isNft });
+        }
+
+        wantsListEl.innerHTML = items
+            .map(item => `<li${item.isNft ? ' class="wants-sheet-nft"' : ''}>${item.line}</li>`)
+            .join('');
+
+    } catch (error) {
+
+        console.error(error);
+
+        wantsListEl.innerHTML =
+            '<li>Failed to load the wants list.</li>';
     }
 }
 
@@ -675,6 +843,8 @@ function renderList(recordings, expandGroups) {
             </div>
         `;
     }
+
+    updateSubtitleBadgesLive();
 }
 
 function createSection(items, expandGroups) {
@@ -803,7 +973,7 @@ function createSection(items, expandGroups) {
                             .toLowerCase()
                             .includes('never gift')
                                 ? `
-                                <span class="tag ungiftable-tag">
+                                <span class="tag ungiftable-tag" title="Gift status">
                                     UNGIFTABLE
                                 </span>
                                 `
@@ -822,6 +992,24 @@ function createSection(items, expandGroups) {
                                 <span class="tag missing-tag">
                                     ${item.amountRecorded}
                                 </span>
+                                `
+                                : ''}
+
+                            ${item.subtitleLangs && item.subtitleLangs.length
+                                ? `
+                                <button
+                                    type="button"
+                                    class="tag subtitles-tag subtitles-tag-toggle${selectedIds.has(item.id) ? ' subtitles-tag-included' : (selectedSubtitleIds.has(item.id) ? ' subtitles-tag-selected' : '')}"
+                                    data-sub-id="${item.id}"
+                                    data-badge-id="${item.id}"
+                                    title="${selectedIds.has(item.id)
+                                        ? 'Included automatically with your recording request'
+                                        : (selectedSubtitleIds.has(item.id)
+                                            ? 'Subtitles selected — click to remove from your request'
+                                            : 'Click to request just the subtitles')}"
+                                >
+                                    ${formatSubtitleLangs(item.subtitleLangs)}
+                                </button>
                                 `
                                 : ''}
 
@@ -974,19 +1162,61 @@ function updateTradeBar() {
 
     if (!bar) return;
 
-    if (selectedIds.size > 0) {
+    const recCount = selectedIds.size;
+    const subCount = selectedSubtitleIds.size;
+
+    if (recCount > 0 || subCount > 0) {
 
         bar.classList.add('visible');
 
-        countEl.textContent =
-        selectedIds.size === 1
-            ? '1 recording selected'
-            : `${selectedIds.size} recordings selected`;
+        const parts = [];
+
+        if (recCount) {
+            parts.push(
+                recCount === 1
+                    ? '1 recording'
+                    : `${recCount} recordings`
+            );
+        }
+
+        if (subCount) {
+            parts.push(
+                subCount === 1
+                    ? '1 subtitle'
+                    : `${subCount} subtitles`
+            );
+        }
+
+        countEl.textContent = parts.join(' + ') + ' selected';
 
     } else {
 
         bar.classList.remove('visible');
     }
+}
+
+// Keeps a subtitles badge's visual state (included / selected / neutral)
+// in sync with selectedIds and selectedSubtitleIds, without needing to
+// re-render the whole card.
+function refreshSubtitleBadge(id) {
+
+    const badge = document.querySelector(
+        `.subtitles-tag-toggle[data-sub-id="${CSS.escape(id)}"]`
+    );
+
+    if (!badge) return;
+
+    const included = selectedIds.has(id);
+    const selected = selectedSubtitleIds.has(id);
+
+    badge.classList.toggle('subtitles-tag-included', included);
+    badge.classList.toggle('subtitles-tag-selected', selected && !included);
+
+    badge.title = included
+        ? 'Included automatically with your recording request'
+        : (selected
+            ? 'Subtitles selected — click to remove from your request'
+            : 'Click to request just the subtitles');
 }
 
 document
@@ -1006,10 +1236,37 @@ document
 
     if (e.target.checked) {
         selectedIds.add(id);
+        // Subtitles are included automatically with the full recording —
+        // drop any standalone subtitles-only selection for it.
+        selectedSubtitleIds.delete(id);
     } else {
         selectedIds.delete(id);
     }
 
+    refreshSubtitleBadge(id);
+    updateTradeBar();
+});
+
+document
+.getElementById('contentArea')
+.addEventListener('click', function(e) {
+
+    const badge = e.target.closest('.subtitles-tag-toggle');
+    if (!badge) return;
+
+    const id = badge.dataset.subId;
+    if (!id) return;
+
+    // Already included via a full recording request — nothing to toggle.
+    if (selectedIds.has(id)) return;
+
+    if (selectedSubtitleIds.has(id)) {
+        selectedSubtitleIds.delete(id);
+    } else {
+        selectedSubtitleIds.add(id);
+    }
+
+    refreshSubtitleBadge(id);
     updateTradeBar();
 });
 
@@ -1072,6 +1329,141 @@ function extractPerformers(castStr) {
             .trim()
         )
         .filter(Boolean);
+}
+
+// Language code -> ISO 3166-1 alpha-2 COUNTRY code, used to pick the
+// real flag icon from the flag-icons set (fi fi-xx classes).
+const LANG_FLAGS = {
+    EN: 'gb',
+    CS: 'cz',
+    DE: 'de',
+    FR: 'fr',
+    ES: 'es',
+    IT: 'it',
+    PT: 'pt',
+    NL: 'nl',
+    PL: 'pl',
+    RU: 'ru',
+    JA: 'jp',
+    KO: 'kr',
+    ZH: 'cn',
+    SV: 'se',
+    DA: 'dk',
+    NO: 'no',
+    FI: 'fi',
+    HU: 'hu',
+    RO: 'ro',
+    SK: 'sk',
+    UK: 'ua',
+    TR: 'tr',
+    AR: 'sa',
+    HE: 'il',
+    EL: 'gr',
+    BG: 'bg',
+    HR: 'hr',
+    SR: 'rs',
+    SL: 'si',
+    ET: 'ee',
+    LV: 'lv',
+    LT: 'lt'
+};
+
+// Returns markup for a real flag icon (not an emoji, not a code) —
+// falls back to the UN flag for anything not in the map above.
+function langFlag(code) {
+    const iso = LANG_FLAGS[code] || 'un';
+    return `<span class="fi fi-${iso} lang-flag"></span>`;
+}
+
+function formatSubtitleLangs(langs) {
+    if (!langs || !langs.length) return '';
+    return langs
+        .map(code => `<span class="lang-flag-pill">${langFlag(code)} ${code}</span>`)
+        .join('');
+}
+
+// Reads the CURRENT (live) state of the subtitles panel — not the
+// committed activeFilters, which only update on "Filter" — so badges
+// can react instantly as the person ticks the toggle/languages.
+function getLiveSubtitleSelection() {
+
+    const toggle = document.getElementById('subtitlesWantToggle');
+
+    if (!toggle || !toggle.checked) {
+        return { show: false, langs: null };
+    }
+
+    const allCb = document.getElementById('subtitle-lang-all');
+
+    if (allCb && allCb.checked) {
+        // "All languages" — show every language a recording has.
+        return { show: true, langs: null };
+    }
+
+    const checkedLangs =
+    [...document.querySelectorAll('.subtitles-lang-dynamic input:checked')]
+    .map(cb => cb.value);
+
+    if (checkedLangs.length) {
+        return { show: true, langs: new Set(checkedLangs) };
+    }
+
+    // Nothing picked at all (neither "All languages" nor a specific
+    // one) — nothing to show.
+    return { show: false, langs: null };
+}
+
+// Keeps the master toggle in sync: if the person unticks everything
+// in the language menu (no "All languages", no specific language),
+// the toggle switches itself back off too.
+function syncSubtitlesToggleWithSelection() {
+
+    const toggle = document.getElementById('subtitlesWantToggle');
+    if (!toggle || !toggle.checked) return;
+
+    const allCb = document.getElementById('subtitle-lang-all');
+
+    const anyLangChecked =
+    [...document.querySelectorAll('.subtitles-lang-dynamic input')]
+    .some(cb => cb.checked);
+
+    if (!(allCb && allCb.checked) && !anyLangChecked) {
+        toggle.checked = false;
+    }
+}
+
+// Applies the live subtitles selection to every badge currently in
+// the DOM: hidden entirely while the toggle is off, showing every
+// language while "All languages" is picked, or narrowed down to just
+// the picked ones (hiding the badge for recordings that have none of
+// them) once specific languages are selected.
+function updateSubtitleBadgesLive() {
+
+    const state = getLiveSubtitleSelection();
+
+    document.querySelectorAll('[data-badge-id]').forEach(badge => {
+
+        if (!state.show) {
+            badge.style.display = 'none';
+            return;
+        }
+
+        const item = allRecordings.find(r => r.id === badge.dataset.badgeId);
+        if (!item) return;
+
+        const langsToShow =
+        state.langs
+            ? item.subtitleLangs.filter(l => state.langs.has(l))
+            : item.subtitleLangs;
+
+        if (!langsToShow.length) {
+            badge.style.display = 'none';
+            return;
+        }
+
+        badge.style.display = '';
+        badge.innerHTML = formatSubtitleLangs(langsToShow);
+    });
 }
 
 function buildFilterPanel() {
@@ -1225,6 +1617,43 @@ function buildFilterPanel() {
     });
 }
 
+function buildSubtitlesPanel() {
+
+    const wrap =
+    document.getElementById('subtitlesLangOptions');
+
+    // Keep the static "All languages" pill, only rebuild the
+    // per-language pills pulled from the sheet.
+    wrap
+    .querySelectorAll('.subtitles-lang-dynamic')
+    .forEach(el => el.remove());
+
+    const langs =
+    [...new Set(
+        allRecordings.flatMap(r => r.subtitleLangs)
+    )]
+    .sort((a, b) => a.localeCompare(b, 'en'));
+
+    langs.forEach(lang => {
+
+        const optionId = `subtitle-lang-${lang}`;
+
+        const option =
+        document.createElement('label');
+
+        option.className = 'subtitles-lang-option subtitles-lang-dynamic';
+        option.setAttribute('for', optionId);
+
+        option.innerHTML = `
+            <input type="checkbox" id="${optionId}" value="${lang}">
+            ${langFlag(lang)}
+            <span>${lang}</span>
+        `;
+
+        wrap.appendChild(option);
+    });
+}
+
 function updateFilterCount() {
 
     const total =
@@ -1272,7 +1701,8 @@ function applyFiltersAndSearch() {
     activeFilters.city.size ||
     activeFilters.mediaType.size ||
     activeFilters.performer.size ||
-    activeFilters.giftableOnly;
+    activeFilters.giftableOnly ||
+    activeFilters.subtitlesFilterOn;
 
     let result = allRecordings;
 
@@ -1359,7 +1789,13 @@ function applyFiltersAndSearch() {
                 return !gs.includes('never gift');
             })();
 
-            return tourOk && formatOk && masterOk && typeOk && cityOk && mediaTypeOk && performerOk && giftableOk;
+            const subtitlesOk =
+            !activeFilters.subtitlesFilterOn ||
+            (activeFilters.subtitleLangs.size
+                ? r.subtitleLangs.some(l => activeFilters.subtitleLangs.has(l))
+                : r.subtitleLangs.length > 0);
+
+            return tourOk && formatOk && masterOk && typeOk && cityOk && mediaTypeOk && performerOk && giftableOk && subtitlesOk;
         });
     }
 
@@ -1383,6 +1819,7 @@ document
 
 // Mobile: collapse a searchable filter group's option list once the
 // person taps outside of it, so the panel doesn't stay cluttered.
+// Only the already-picked options remain visible while collapsed.
 document.addEventListener('click', function(e) {
 
     document
@@ -1391,6 +1828,20 @@ document.addEventListener('click', function(e) {
 
         if (!group.contains(e.target)) {
             group.classList.remove('filter-group-expanded');
+
+            const searchInput =
+            group.querySelector('.filter-search-input');
+
+            if (searchInput) searchInput.value = '';
+
+            group
+            .querySelectorAll('.filter-option')
+            .forEach(opt => opt.style.display = '');
+
+            const emptyMsg =
+            group.querySelector('.filter-search-empty');
+
+            if (emptyMsg) emptyMsg.style.display = 'none';
         }
     });
 });
@@ -1450,6 +1901,132 @@ document
     applyFiltersAndSearch();
 });
 
+// Standalone subtitles panel — deliberately kept separate from the
+// main filters. Selections only take effect once "Show matching
+// recordings" is pressed.
+// "All languages" and individual language pills are mutually exclusive.
+// As soon as the person switches subtitles on, default to "All
+// languages" — everything already qualifies, so every pill lights
+// up blue to signal that. Picking a specific language (e.g. CS)
+// then drops "All languages" and narrows it down to just that pick.
+// Manually ticking every individual language re-checks "All
+// languages" too, since that's functionally the same thing.
+document
+.getElementById('subtitlesWantToggle')
+.addEventListener('change', function() {
+
+    if (!this.checked) {
+
+        // Turning the master toggle off also cancels an already-applied
+        // subtitles filter, so recordings don't stay hidden behind a
+        // filter the person just switched off.
+        activeFilters.subtitlesFilterOn = false;
+        activeFilters.subtitleLangs = new Set();
+
+        document
+        .getElementById('subtitlesShowBtn')
+        .classList.remove('active');
+
+        updateSubtitleBadgesLive();
+        applyFiltersAndSearch();
+        return;
+    }
+
+    document.getElementById('subtitle-lang-all').checked = true;
+
+    document
+    .querySelectorAll('.subtitles-lang-dynamic input')
+    .forEach(cb => cb.checked = false);
+
+    updateSubtitleBadgesLive();
+});
+
+document
+.getElementById('subtitlesLangOptions')
+.addEventListener('change', function(e) {
+
+    const allCb = document.getElementById('subtitle-lang-all');
+
+    if (e.target === allCb) {
+        if (allCb.checked) {
+            document
+            .querySelectorAll('.subtitles-lang-dynamic input')
+            .forEach(cb => cb.checked = false);
+        }
+        syncSubtitlesToggleWithSelection();
+        updateSubtitleBadgesLive();
+        return;
+    }
+
+    if (e.target.closest('.subtitles-lang-dynamic')) {
+        const allDynamicCbs =
+        [...document.querySelectorAll('.subtitles-lang-dynamic input')];
+
+        const everyLangChecked =
+        allDynamicCbs.length > 0 &&
+        allDynamicCbs.every(cb => cb.checked);
+
+        allCb.checked = everyLangChecked;
+    }
+
+    syncSubtitlesToggleWithSelection();
+    updateSubtitleBadgesLive();
+});
+
+document
+.getElementById('subtitlesShowBtn')
+.addEventListener('click', function() {
+
+    const btn = this;
+
+    if (btn.classList.contains('active')) {
+
+        // Already active — clicking again turns the filter off.
+        activeFilters.subtitlesFilterOn = false;
+        activeFilters.subtitleLangs = new Set();
+
+        btn.classList.remove('active');
+
+        applyFiltersAndSearch();
+        return;
+    }
+
+    const checkedLangs =
+    [...document.querySelectorAll('.subtitles-lang-dynamic input:checked')]
+    .map(cb => cb.value);
+
+    const wantsSubtitles =
+    document.getElementById('subtitlesWantToggle').checked;
+
+    activeFilters.subtitleLangs = new Set(checkedLangs);
+    activeFilters.subtitlesFilterOn = wantsSubtitles;
+
+    btn.classList.toggle('active', wantsSubtitles);
+
+    applyFiltersAndSearch();
+});
+
+document
+.getElementById('subtitlesResetBtn')
+.addEventListener('click', function() {
+
+    document.getElementById('subtitlesWantToggle').checked = false;
+    document.getElementById('subtitle-lang-all').checked = false;
+
+    document
+    .querySelectorAll('.subtitles-lang-dynamic input')
+    .forEach(cb => cb.checked = false);
+
+    activeFilters.subtitleLangs = new Set();
+    activeFilters.subtitlesFilterOn = false;
+
+    document
+    .getElementById('subtitlesShowBtn')
+    .classList.remove('active');
+
+    applyFiltersAndSearch();
+});
+
 document
 .getElementById('filterClear')
 .addEventListener('click', function() {
@@ -1503,7 +2080,7 @@ function renderSelectedList() {
 
     list.innerHTML = '';
 
-    if (!selectedIds.size) {
+    if (!selectedIds.size && !selectedSubtitleIds.size) {
 
         closeTradeModal();
         return;
@@ -1542,6 +2119,49 @@ function renderSelectedList() {
                 type="button"
                 class="trade-selected-remove"
                 data-id="${item.id}"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        `;
+
+        list.appendChild(row);
+    });
+
+    // Subtitles-only selections — shown separately with a blue
+    // background so it's obvious they're just subtitles, not the
+    // full recording.
+    selectedSubtitleIds.forEach(id => {
+
+        const item =
+        allRecordings.find(r => r.id === id);
+
+        if (!item) return;
+
+        const row =
+        document.createElement('div');
+
+        row.className = 'trade-selected-row trade-selected-row-subtitles';
+        row.dataset.id = item.id;
+        row.dataset.subtitleOnly = 'true';
+
+        const labelParts = [
+            item.id,
+            item.title,
+            item.master,
+            formatWebDate(item.date)
+        ].filter(Boolean);
+
+        row.innerHTML = `
+            <span class="trade-selected-label">
+                <i class="fa-solid fa-closed-captioning trade-selected-sub-icon"></i>
+                ${labelParts.join(' — ')}
+                <span class="trade-selected-sub-note">subtitles only</span>
+            </span>
+            <button
+                type="button"
+                class="trade-selected-remove"
+                data-id="${item.id}"
+                data-subtitle-only="true"
             >
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1659,6 +2279,18 @@ document
     if (!btn) return;
 
     const id = btn.dataset.id;
+    const isSubtitleOnly = btn.dataset.subtitleOnly === 'true';
+
+    if (isSubtitleOnly) {
+
+        selectedSubtitleIds.delete(id);
+        refreshSubtitleBadge(id);
+
+        updateTradeBar();
+        renderSelectedList();
+        updateUngiftableHighlights();
+        return;
+    }
 
     selectedIds.delete(id);
 
@@ -1667,6 +2299,8 @@ document
         `.show-checkbox[data-id="${CSS.escape(id)}"]`
     )
     .forEach(cb => cb.checked = false);
+
+    refreshSubtitleBadge(id);
 
     const largeWarning =
     document.getElementById('tradeLargeTradeWarning');
@@ -1772,6 +2406,22 @@ function buildRecordingsListText() {
         ].filter(Boolean);
 
         lines.push('- ' + item.id + ' ' + parts.join(' — '));
+    });
+
+    selectedSubtitleIds.forEach(id => {
+
+        const item =
+        allRecordings.find(r => r.id === id);
+
+        if (!item) return;
+
+        const parts = [
+            item.title,
+            item.master,
+            formatWebDate(item.date)
+        ].filter(Boolean);
+
+        lines.push('- SUB ' + item.id + ' ' + parts.join(' — '));
     });
 
     return lines.join('\n');
@@ -1882,10 +2532,29 @@ document
         return;
     }
 
-    if (!selectedIds.size) {
+    const linkInput =
+    document.getElementById('tradeLink');
+
+    const linkError =
+    document.getElementById('tradeLinkError');
+
+    const collectionLinkValue = linkInput.value.trim();
+
+    linkError.textContent = '';
+    linkInput.classList.remove('trade-input-invalid');
+
+    if (!isGiftAtSubmit && !collectionLinkValue) {
+
+        linkError.textContent = 'Please add a link to your list.';
+        linkInput.classList.add('trade-input-invalid');
+        linkInput.focus();
+        return;
+    }
+
+    if (!selectedIds.size && !selectedSubtitleIds.size) {
 
         setFormStatus(
-            'You need to select at least one recording first.',
+            'You need to select at least one recording or subtitle first.',
             'error'
         );
         return;
@@ -1975,10 +2644,18 @@ document
         submitBtn.disabled = false;
 
         selectedIds.clear();
+        selectedSubtitleIds.clear();
 
         document
         .querySelectorAll('.show-checkbox')
         .forEach(cb => cb.checked = false);
+
+        document
+        .querySelectorAll('.subtitles-tag-toggle')
+        .forEach(badge => {
+            badge.classList.remove('subtitles-tag-included', 'subtitles-tag-selected');
+            badge.title = 'Click to request just the subtitles';
+        });
 
         updateTradeBar();
 
@@ -2013,6 +2690,7 @@ document
 });
 
 fetchSheetsData();
+fetchWantsList();
 
 </script>
 

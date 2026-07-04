@@ -31,6 +31,12 @@
     pointer-events:auto;
 }
 
+/* Subtitles can still be requested on their own even though the
+   full recording is NFT and locked from selection. */
+.nft-card .subtitles-tag-toggle{
+    pointer-events:auto;
+}
+
 .nft-card:hover{
     background:rgba(48,18,18,.8) !important;
     border-color:rgba(255,255,255,.08) !important;
@@ -70,6 +76,11 @@
     font-weight:700;
     letter-spacing:.5px;
     white-space:nowrap;
+    height:38px;
+    padding:0 20px;
+    font-size:.85rem;
+    position:relative;
+    top:3px;
 }
 
 *{
@@ -229,6 +240,20 @@ header p{
     text-underline-offset:3px;
 }
 
+.wants-sheet-list a{
+    color:var(--muted);
+    text-decoration:underline;
+    text-underline-offset:3px;
+}
+
+.wants-sheet-list a:hover{
+    color:var(--text);
+}
+
+.text-accent{
+    color:var(--accent);
+}
+
 .info-contact-row{
     display:flex;
     flex-wrap:wrap;
@@ -274,6 +299,19 @@ header p{
     font-weight:600;
 }
 
+.wants-list li.wants-sheet-nft,
+.wants-list li.wants-sheet-nft strong{
+    color:var(--nft-tag);
+}
+
+.wants-list li.wants-sheet-nft a{
+    color:var(--nft-tag);
+}
+
+.wants-list li.wants-sheet-nft a:hover{
+    color:#e05a4a;
+}
+
 .info-note{
     margin-top:12px !important;
     font-style:italic;
@@ -301,6 +339,7 @@ header p{
     flex-wrap:wrap;
     gap:8px;
     margin-top:14px;
+    padding-left:20px;
 }
 
 .mini-nav-btn{
@@ -620,6 +659,9 @@ header p{
 
     cursor:pointer;
     position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
     transition:
     background .18s ease,
@@ -628,12 +670,11 @@ header p{
 
 .filter-option input::after{
     content:'';
-    position:absolute;
-    left:4px;
-    top:1px;
 
     width:5px;
     height:9px;
+
+    margin-bottom:1px;
 
     border:solid white;
     border-width:0 2px 2px 0;
@@ -690,7 +731,59 @@ header p{
     font-size:.82rem;
     font-weight:600;
     color:var(--text);
-    gap:8px;
+    gap:10px;
+}
+
+/* Sliding toggle switch for the footer-only filters
+   (Giftable only / Video only / Audio only) */
+.filter-giftable-footer input{
+    appearance:none;
+    -webkit-appearance:none;
+
+    width:40px;
+    height:22px;
+
+    flex-shrink:0;
+
+    border-radius:999px;
+    border:none;
+    background:rgba(255,255,255,.16);
+
+    position:relative;
+    cursor:pointer;
+
+    transition:background .25s ease;
+}
+
+.filter-giftable-footer input::after{
+    content:'';
+    position:absolute;
+    top:2px;
+    left:2px;
+
+    width:18px;
+    height:18px;
+
+    border:none;
+    border-radius:50%;
+    background:#fff;
+
+    transform:none;
+    opacity:1;
+
+    box-shadow:0 1px 3px rgba(0,0,0,.35);
+
+    transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+
+.filter-giftable-footer input:checked{
+    background:var(--accent);
+    border-color:transparent;
+}
+
+.filter-giftable-footer input:checked::after{
+    transform:translateX(18px);
+    opacity:1;
 }
 
 .filter-clear{
@@ -709,6 +802,302 @@ header p{
 }
 
 .filter-clear:hover{
+    color:#ff7b7b;
+}
+
+/* =========================
+   SUBTITLES PANEL (separate from the main filters)
+   — uses its own blue accent, matching the subtitles tag color,
+   scoped locally so it doesn't affect the site-wide orange accent.
+========================= */
+
+.subtitles-panel{
+    --sub-accent:#79a8ff;
+    --sub-accent-rgb:84,145,255;
+
+    background:rgba(var(--sub-accent-rgb),.07);
+    border:1px solid rgba(var(--sub-accent-rgb),.22);
+    border-left:3px solid rgba(var(--sub-accent-rgb),.45);
+    border-right:3px solid rgba(var(--sub-accent-rgb),.45);
+    border-radius:18px;
+
+    margin:18px 0;
+
+    overflow:hidden;
+
+    transition:border-color .2s ease, background .2s ease;
+}
+
+.subtitles-panel:has(#subtitlesWantToggle:checked){
+    border-color:rgba(var(--sub-accent-rgb),.35);
+}
+
+.subtitles-panel-header{
+    display:flex;
+    align-items:center;
+    gap:16px;
+
+    padding:18px 22px;
+}
+
+.subtitles-panel-header > i{
+    font-size:1.3rem;
+    color:var(--sub-accent);
+    opacity:.85;
+    flex-shrink:0;
+}
+
+.subtitles-panel-copy{
+    flex:1;
+    min-width:0;
+}
+
+.subtitles-panel-title{
+    margin:0 0 3px;
+    font-size:.98rem;
+    font-weight:700;
+    color:var(--text);
+}
+
+.subtitles-panel-sub{
+    margin:0;
+    font-size:.8rem;
+    color:var(--muted);
+}
+
+/* Reuse the same sliding-switch look as the footer-only filters */
+.toggle-switch-wrap{
+    flex-shrink:0;
+    cursor:pointer;
+}
+
+.toggle-switch-wrap input{
+    appearance:none;
+    -webkit-appearance:none;
+
+    width:44px;
+    height:24px;
+
+    border-radius:999px;
+    border:none;
+    background:rgba(255,255,255,.16);
+
+    position:relative;
+    cursor:pointer;
+
+    transition:background .25s ease;
+}
+
+.toggle-switch-wrap input::after{
+    content:'';
+    position:absolute;
+    top:2px;
+    left:2px;
+
+    width:20px;
+    height:20px;
+
+    border-radius:50%;
+    background:#fff;
+
+    box-shadow:0 1px 3px rgba(0,0,0,.35);
+
+    transition:transform .25s cubic-bezier(.4,0,.2,1);
+}
+
+.toggle-switch-wrap input:checked{
+    background:var(--accent);
+}
+
+.subtitles-panel .toggle-switch-wrap input:checked{
+    background:var(--sub-accent);
+}
+
+.toggle-switch-wrap input:checked::after{
+    transform:translateX(20px);
+}
+
+.subtitles-lang-wrap{
+    max-height:0;
+    opacity:0;
+
+    padding:0 22px;
+    overflow:hidden;
+
+    transition:
+    max-height .3s ease,
+    opacity .2s ease,
+    padding .3s ease;
+}
+
+.subtitles-panel:has(#subtitlesWantToggle:checked) .subtitles-lang-wrap{
+    max-height:900px;
+    opacity:1;
+
+    padding:0 22px 22px;
+}
+
+.subtitles-lang-options{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+
+    padding-top:14px;
+
+    border-top:1px solid var(--border);
+}
+
+.subtitles-lang-option{
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.02);
+
+    color:#d7e1ec;
+    font-size:.82rem;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:
+    background .15s ease,
+    border-color .15s ease,
+    color .15s ease;
+}
+
+.subtitles-lang-option:hover{
+    border-color:rgba(var(--sub-accent-rgb),.3);
+}
+
+.subtitles-lang-option input{
+    appearance:none;
+    -webkit-appearance:none;
+    position:absolute;
+
+    width:0;
+    height:0;
+
+    opacity:0;
+}
+
+.subtitles-lang-option:has(input:checked){
+    background:rgba(var(--sub-accent-rgb),.14);
+    border-color:rgba(var(--sub-accent-rgb),.4);
+    color:var(--sub-accent);
+}
+
+.subtitles-lang-all{
+    border-style:dashed;
+    font-weight:700;
+}
+
+/* While "All languages" is picked, every individual language pill
+   lights up the same blue — they're all included under "all" —
+   without actually being ticked. Picking one specific language
+   drops "All languages" and this effect goes away. */
+.subtitles-lang-options:has(#subtitle-lang-all:checked) .subtitles-lang-dynamic{
+    background:rgba(var(--sub-accent-rgb),.14);
+    border-color:rgba(var(--sub-accent-rgb),.4);
+    color:var(--sub-accent);
+}
+
+.subtitles-lang-option .lang-flag{
+    width:1.3em;
+    height:1em;
+    border-radius:2px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.12);
+    flex-shrink:0;
+}
+
+.subtitles-panel-note{
+    margin:14px 0 0;
+    padding:14px 16px;
+
+    background:rgba(var(--sub-accent-rgb),.06);
+    border:1px solid rgba(var(--sub-accent-rgb),.18);
+    border-radius:12px;
+
+    color:var(--sub-accent);
+    opacity:.9;
+    font-size:.78rem;
+    line-height:1.55;
+    white-space:normal;
+    text-align:left;
+}
+
+.subtitles-panel-note-mark{
+    margin-right:3px;
+    font-weight:700;
+}
+
+.subtitles-panel-actions{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:18px;
+
+    margin-top:16px;
+    padding-top:16px;
+
+    border-top:1px solid var(--border);
+}
+
+.subtitles-show-btn{
+    background:transparent;
+    border:1.5px solid var(--sub-accent);
+    border-radius:12px;
+
+    padding:9.5px 22px;
+
+    color:var(--sub-accent);
+    font-family:"Fraunces", serif;
+    font-size:.86rem;
+    font-weight:700;
+    letter-spacing:.2px;
+
+    cursor:pointer;
+
+    transition:
+    background .45s cubic-bezier(.4,0,.2,1),
+    color .45s cubic-bezier(.4,0,.2,1),
+    border-color .45s cubic-bezier(.4,0,.2,1),
+    opacity .3s ease;
+}
+
+.subtitles-show-btn:hover{
+    background:rgba(var(--sub-accent-rgb),.12);
+}
+
+.subtitles-show-btn.active{
+    background:var(--sub-accent);
+    border-color:var(--sub-accent);
+    color:#0c1830;
+}
+
+.subtitles-show-btn.active:hover{
+    opacity:.88;
+    background:var(--sub-accent);
+}
+
+.subtitles-reset-btn{
+    background:none;
+    border:none;
+
+    color:var(--muted);
+    font-size:.82rem;
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.15s ease;
+}
+
+.subtitles-reset-btn:hover{
     color:#ff7b7b;
 }
 
@@ -862,8 +1251,6 @@ header p{
 }
 
 .title-group-body .show-checkbox::after{
-    left:6px;
-    top:2px;
     width:6px;
     height:11px;
 }
@@ -914,6 +1301,9 @@ header p{
     cursor:pointer;
 
     position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
     transition:
     background .18s ease,
@@ -946,13 +1336,10 @@ header p{
 
     content:'';
 
-    position:absolute;
-
-    left:8px;
-    top:3px;
-
     width:7px;
     height:13px;
+
+    margin-bottom:2px;
 
     border:
     solid white;
@@ -1378,6 +1765,87 @@ header p{
     rgba(84,145,255,.22);
 
     color:#79a8ff;
+
+    gap:6px;
+
+    height:38px;
+
+    padding:0 20px;
+
+    font-size:.85rem;
+
+    letter-spacing:.6px;
+
+    position:relative;
+    top:3px;
+}
+
+.lang-flag-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+}
+
+.lang-flag-pill + .lang-flag-pill{
+    margin-left:6px;
+}
+
+.subtitles-tag .lang-flag{
+    width:1.2em;
+    height:.9em;
+    border-radius:2px;
+    box-shadow:0 0 0 1px rgba(255,255,255,.15);
+    flex-shrink:0;
+}
+
+/* Clickable subtitles badge — lets the person request just the
+   subtitles for a title without requesting the whole recording. */
+button.subtitles-tag-toggle{
+    appearance:none;
+    -webkit-appearance:none;
+
+    font:inherit;
+    letter-spacing:.6px;
+    text-transform:uppercase;
+
+    cursor:pointer;
+
+    transition:
+    background .15s ease,
+    border-color .15s ease,
+    color .15s ease,
+    opacity .15s ease;
+}
+
+button.subtitles-tag-toggle:hover{
+    background:rgba(84,145,255,.2);
+    border-color:rgba(84,145,255,.45);
+}
+
+/* Selected — subtitles-only added to the request/trade. A soft,
+   muted blue fill — enough to stand out from the neutral badge
+   without overpowering the flag icons inside it. */
+.subtitles-tag.subtitles-tag-selected{
+    background:rgba(84,145,255,.38);
+    border-color:rgba(84,145,255,.65);
+    color:#eaf1ff;
+}
+
+.subtitles-tag.subtitles-tag-selected:hover{
+    background:rgba(84,145,255,.46);
+    border-color:rgba(84,145,255,.7);
+}
+
+/* Included automatically because the full recording is selected —
+   not clickable, shown dimmed so it reads as "already covered". */
+button.subtitles-tag-included{
+    cursor:default;
+    opacity:.55;
+}
+
+button.subtitles-tag-included:hover{
+    background:rgba(84,145,255,.10);
+    border-color:rgba(84,145,255,.22);
 }
 
 /* UNGIFTABLE */
@@ -1584,6 +2052,34 @@ header p{
         overflow:visible;
     }
 
+    .subtitles-panel-header{
+        padding:16px;
+        align-items:center;
+    }
+
+    .subtitles-panel-header > i{
+        margin-top:0;
+        position:relative;
+        top:-1px;
+    }
+
+    .subtitles-lang-wrap{
+        padding:0 16px;
+    }
+
+    .subtitles-panel:has(#subtitlesWantToggle:checked) .subtitles-lang-wrap{
+        padding:0 16px 18px;
+    }
+
+    .subtitles-panel-actions{
+        flex-wrap:wrap;
+    }
+
+    .subtitles-panel-note{
+        white-space:normal;
+    }
+
+
     .filter-groups{
         grid-template-columns:1fr;
         gap:20px;
@@ -1596,9 +2092,19 @@ header p{
 
     /* Categories with a search box stay collapsed on mobile until
        the person actually taps into search for that category — too
-       many checkboxes at once is unreadable on a small screen. */
+       many checkboxes at once is unreadable on a small screen.
+       While collapsed, keep already-picked options visible so the
+       person can still see (and untick) their active selection. */
     .filter-group-searchable .filter-options{
+        display:flex;
+    }
+
+    .filter-group-searchable:not(.filter-group-expanded) .filter-options .filter-option{
         display:none;
+    }
+
+    .filter-group-searchable:not(.filter-group-expanded) .filter-options .filter-option:has(input:checked){
+        display:flex;
     }
 
     .filter-group-searchable.filter-group-expanded .filter-options{
@@ -2053,6 +2559,28 @@ body.modal-open{
     text-overflow:ellipsis;
 }
 
+/* Subtitles-only rows — blue background makes it immediately clear
+   these entries are just subtitles, not full recordings. */
+.trade-selected-row-subtitles{
+    background:rgba(84,145,255,.14);
+    border-color:rgba(84,145,255,.35);
+}
+
+.trade-selected-sub-icon{
+    margin-right:6px;
+    color:#79a8ff;
+}
+
+.trade-selected-sub-note{
+    margin-left:6px;
+
+    color:#79a8ff;
+    font-weight:700;
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+}
+
 .trade-selected-remove{
     flex-shrink:0;
 
@@ -2174,8 +2702,6 @@ body.modal-open{
     font-size:.88rem;
     font-weight:400;
     color:#dfe7f1;
-
-    cursor:pointer;
 }
 
 .trade-checkbox-field input{
@@ -2192,6 +2718,9 @@ body.modal-open{
     cursor:pointer;
     position:relative;
     flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 
     transition:
     background .18s ease,
@@ -2200,12 +2729,11 @@ body.modal-open{
 
 .trade-checkbox-field input::after{
     content:'';
-    position:absolute;
-    left:5px;
-    top:1px;
 
     width:6px;
     height:11px;
+
+    margin-bottom:2px;
 
     border:solid white;
     border-width:0 2px 2px 0;
