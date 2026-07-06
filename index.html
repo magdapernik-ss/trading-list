@@ -83,7 +83,7 @@
                 </div>
                 <ul class="info-list">
                     <li>I prefer to be contacted via email :)</li>
-                    <li>I trade pro-shots, bootlegs and concerts, <strong>I'm not interested in audios</strong> (unless it's a german/czech/slovak/polish production or a concert).</li>
+                    <li>I trade pro-shots, bootlegs and concerts, <strong>I'm generally not interested in audios</strong> (unless it's in my wants, a german/czech/slovak/polish production or a concert).</li>
                     <li>Transfers are done typically throught Mega, Google Drive or Transfer.it, but I don't mind alternatives.</li>
                 </ul>
             </div>
@@ -207,9 +207,9 @@ Cast: Daniel Koek (Anatoly), James Fox (Freddie), Shona White (Florence), Poppy 
 
         <div class="mini-nav">
             <button class="mini-nav-btn active" data-category="all">All</button>
-            <button class="mini-nav-btn" data-category="videos">Videos</button>
+            <button class="mini-nav-btn" data-category="videos">Musicals</button>
+            <button class="mini-nav-btn" data-category="proshots">Plays</button>
             <button class="mini-nav-btn" data-category="concerts">Concerts</button>
-            <button class="mini-nav-btn" data-category="proshots">Theatre Pro-Shots</button>
         </div>
 
         <div id="filterPanel" class="filter-panel">
@@ -1818,8 +1818,28 @@ document
 });
 
 // Mobile: collapse a searchable filter group's option list once the
-// person taps outside of it, so the panel doesn't stay cluttered.
-// Only the already-picked options remain visible while collapsed.
+// person taps outside of it, or once they pick an option, so the
+// panel doesn't stay cluttered. Only the already-picked options
+// remain visible while collapsed.
+function collapseFilterGroup(group) {
+
+    group.classList.remove('filter-group-expanded');
+
+    const searchInput =
+    group.querySelector('.filter-search-input');
+
+    if (searchInput) searchInput.value = '';
+
+    group
+    .querySelectorAll('.filter-option')
+    .forEach(opt => opt.style.display = '');
+
+    const emptyMsg =
+    group.querySelector('.filter-search-empty');
+
+    if (emptyMsg) emptyMsg.style.display = 'none';
+}
+
 document.addEventListener('click', function(e) {
 
     document
@@ -1827,21 +1847,7 @@ document.addEventListener('click', function(e) {
     .forEach(group => {
 
         if (!group.contains(e.target)) {
-            group.classList.remove('filter-group-expanded');
-
-            const searchInput =
-            group.querySelector('.filter-search-input');
-
-            if (searchInput) searchInput.value = '';
-
-            group
-            .querySelectorAll('.filter-option')
-            .forEach(opt => opt.style.display = '');
-
-            const emptyMsg =
-            group.querySelector('.filter-search-empty');
-
-            if (emptyMsg) emptyMsg.style.display = 'none';
+            collapseFilterGroup(group);
         }
     });
 });
@@ -1863,6 +1869,14 @@ document
 
     updateFilterCount();
     applyFiltersAndSearch();
+
+    // Once an option is picked (or unpicked), collapse the group
+    // back down so only the selected option(s) remain visible —
+    // matching how the search field opened it in the first place.
+    const parentGroup =
+    e.target.closest('.filter-group-searchable.filter-group-expanded');
+
+    if (parentGroup) collapseFilterGroup(parentGroup);
 });
 
 document

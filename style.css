@@ -2047,6 +2047,15 @@ button.subtitles-tag-included:hover{
         right:-6px;
     }
 
+    .filter-search-input{
+        height:40px;
+        font-size:.88rem;
+    }
+
+    .filter-clear{
+        margin-left:auto;
+    }
+
     .filter-panel-inner{
         padding:18px 16px;
         overflow:visible;
@@ -2126,12 +2135,13 @@ button.subtitles-tag-included:hover{
     }
 
     .ungiftable-tag,
-    .missing-tag{
-        height:28px;
+    .missing-tag,
+    .subtitles-tag{
+        height:32px;
 
-        padding:0 12px;
+        padding:0 15px;
 
-        font-size:.66rem;
+        font-size:.74rem;
 
         letter-spacing:.4px;
 
@@ -2222,7 +2232,7 @@ button.subtitles-tag-included:hover{
     .mobile-bottom-row{
         display:flex;
         align-items:center;
-        justify-content:space-between;
+        justify-content:flex-end;
         gap:12px;
     }
     .info-right {
@@ -2369,6 +2379,7 @@ button.subtitles-tag-included:hover{
     display:flex;
     align-items:center;
     justify-content:center;
+    flex-shrink:0;
 
     width:30px;
     height:30px;
@@ -2855,11 +2866,28 @@ body.modal-open{
         transform:translateY(140%);
 
         width:calc(100% - 32px);
+        gap:10px;
+        padding:12px 16px 12px 14px;
         justify-content:space-between;
     }
 
     .trade-bar.visible{
         transform:translateY(0);
+    }
+
+    /* The count text is the only variable-length part of the bar —
+       let it shrink and truncate with an ellipsis so it can never
+       push the icon or the "Request a trade" label off screen. */
+    .trade-bar-count{
+        flex:1 1 auto;
+        min-width:0;
+
+        overflow:hidden;
+        text-overflow:ellipsis;
+    }
+
+    .trade-bar-cta{
+        flex-shrink:0;
     }
 
     .trade-modal{
