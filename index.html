@@ -80,6 +80,7 @@
                     <span><i class="fa-solid fa-envelope"></i> <a href="mailto:myopia779@gmail.com">myopia779@gmail.com</a></span>
                     <span><img src="encora-icon.png" alt="" class="info-contact-icon"> <a href="https://encora.it/traders/myopia779" target="_blank">myopia779</a></span>
                     <span><i class="fa-brands fa-reddit"></i> <a href="https://www.reddit.com/u/myopia779/s/phVBIJj4SQ" target="_blank">u/myopia779</a></span>
+                    <span><i class="fa-brands fa-discord"></i> <span class="text-accent">myopia7</span></span>
                 </div>
                 <ul class="info-list">
                     <li>I prefer to be contacted via email :)</li>
@@ -298,7 +299,7 @@ Cast: Daniel Koek (Anatoly), James Fox (Freddie), Shona White (Florence), Poppy 
 
         <div id="tradeLargeTradeWarning" class="trade-warning" style="display:none;">
             I don't usually do trades this large. Please contact me directly:<br>
-            Reddit: <strong>u/myopia779</strong> &nbsp;|&nbsp; Email: <strong>myopia779@gmail.com</strong>
+            Reddit: <strong>u/myopia779</strong> &nbsp;|&nbsp; Email: <strong>myopia779@gmail.com</strong> &nbsp;|&nbsp; Discord: <strong>myopia7</strong>
         </div>
 
         <form id="tradeForm" class="trade-form" novalidate>
@@ -627,8 +628,14 @@ async function fetchSheetsData() {
                     : '',
 
                 venue:
-                    row[15]
-                    ? row[15].toString().trim()
+                    row[2]
+                    ? row[2].toString().trim()
+                    : '',
+
+                // Column O — bonus content or known issues with this recording
+                extraInfo:
+                    row[14]
+                    ? row[14].toString().trim()
                     : '',
 
                 amountRecorded:
@@ -664,10 +671,16 @@ async function fetchSheetsData() {
                     ? row[17].toString().trim()
                     : '',
 
-                // Column W — comma separated language codes, e.g. "EN,CS"
+                // Column V — text to copy to clipboard via the copy icon
+                copyText:
+                    row[21]
+                    ? row[21].toString().trim()
+                    : '',
+
+                // Column X — comma separated language codes, e.g. "EN,CS"
                 subtitleLangs:
-                    row[22]
-                    ? row[22]
+                    row[23]
+                    ? row[23]
                         .toString()
                         .split(',')
                         .map(code => code.trim().toUpperCase())
@@ -919,22 +932,8 @@ function createSection(items, expandGroups) {
 
         groupBody.className = 'title-group-body';
 
-        // Sort recordings within the group by date (oldest first)
-        // Date format in data: DD/MM/YYYY (or 00/MM/YYYY or 00/00/YYYY)
-        function parseDateToSortKey(dateStr) {
-            if (!dateStr || !dateStr.includes('/')) return 0;
-            const parts = dateStr.trim().split('/');
-            if (parts.length !== 3) return 0;
-            const day   = parseInt(parts[0], 10) || 1;
-            const month = parseInt(parts[1], 10) || 1;
-            const year  = parseInt(parts[2], 10) || 0;
-            return year * 10000 + month * 100 + day;
-        }
-
-        groupItems.sort((a, b) =>
-            parseDateToSortKey(a.date) - parseDateToSortKey(b.date)
-        );
-
+        // Recordings within the group keep the order they appear in the
+        // original spreadsheet (no re-sorting).
         groupItems.forEach(item => {
 
             const isNFT = item.isNft;
@@ -1052,6 +1051,15 @@ function createSection(items, expandGroups) {
 
             </div>
 
+            ${item.extraInfo
+                ? `
+                <div class="extra-info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <p>${item.extraInfo}</p>
+                </div>
+                `
+                : ''}
+
             <div class="info-grid">
 
                 <div class="info-left">
@@ -1059,7 +1067,7 @@ function createSection(items, expandGroups) {
                     ${item.venue
                         ? `
                         <div class="info-row">
-                            <span>Venue</span>
+                            <span>Tour</span>
                             <p>${item.venue}</p>
                         </div>
                         `
@@ -1122,6 +1130,19 @@ function createSection(items, expandGroups) {
                         : ''}
 
                     <div class="mobile-bottom-row">
+
+                        ${item.copyText
+                            ? `
+                            <button
+                                type="button"
+                                class="copy-btn"
+                                data-copy-id="${item.id}"
+                                title="Copy to clipboard"
+                            >
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                            `
+                            : ''}
 
                         ${item.encora
                             ? `
@@ -1245,6 +1266,40 @@ document
 
     refreshSubtitleBadge(id);
     updateTradeBar();
+});
+
+document
+.getElementById('contentArea')
+.addEventListener('click', function(e) {
+
+    const copyBtn = e.target.closest('.copy-btn');
+    if (!copyBtn) return;
+
+    const id = copyBtn.dataset.copyId;
+    if (!id) return;
+
+    const recording = allRecordings.find(r => r.id === id);
+    if (!recording || !recording.copyText) return;
+
+    navigator.clipboard.writeText(recording.copyText).then(() => {
+
+        const icon = copyBtn.querySelector('i');
+        const originalClass = icon.className;
+        const originalTitle = copyBtn.title;
+
+        icon.className = 'fa-solid fa-check';
+        copyBtn.classList.add('copy-btn-done');
+        copyBtn.title = 'Copied!';
+
+        setTimeout(() => {
+            icon.className = originalClass;
+            copyBtn.classList.remove('copy-btn-done');
+            copyBtn.title = originalTitle;
+        }, 5000);
+
+    }).catch(error => {
+        console.error(error);
+    });
 });
 
 document
@@ -1734,6 +1789,11 @@ function applyFiltersAndSearch() {
 
                 (r.venue &&
                 r.venue.toLowerCase().includes(query))
+
+                ||
+
+                (r.extraInfo &&
+                r.extraInfo.toLowerCase().includes(query))
 
                 ||
 
