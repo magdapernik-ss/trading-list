@@ -254,6 +254,16 @@ header p{
     color:var(--accent);
 }
 
+.info-accordion-body a.missing-smalls-link{
+    color:var(--muted);
+    text-decoration:underline;
+    text-underline-offset:3px;
+}
+
+.info-accordion-body a.missing-smalls-link:hover{
+    color:var(--text);
+}
+
 .info-contact-row{
     display:flex;
     flex-wrap:wrap;
@@ -2493,6 +2503,122 @@ button.subtitles-tag-included:hover{
 
 .trade-bar:hover .trade-bar-cta i{
     transform:translateX(3px);
+}
+
+/* =========================
+   REDDIT WELCOME OVERLAY
+========================= */
+
+.reddit-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1300;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    padding:24px;
+
+    background:rgba(5,8,12,.72);
+    backdrop-filter:blur(6px);
+
+    opacity:0;
+    visibility:hidden;
+
+    transition:
+    opacity .2s ease,
+    visibility .2s ease;
+}
+
+.reddit-overlay.visible{
+    opacity:1;
+    visibility:visible;
+}
+
+.reddit-overlay-modal{
+    width:100%;
+    max-width:440px;
+
+    text-align:left;
+
+    background:var(--card);
+    border:1px solid rgba(255,255,255,.08);
+    border-top:3px solid var(--accent);
+    border-radius:20px;
+
+    padding:30px 30px 26px;
+
+    box-shadow:0 30px 70px rgba(0,0,0,.5);
+
+    transform:translateY(16px) scale(.97);
+
+    transition:transform .25s cubic-bezier(.2,.9,.25,1.1);
+}
+
+.reddit-overlay.visible .reddit-overlay-modal{
+    transform:translateY(0) scale(1);
+}
+
+.reddit-overlay-modal h2{
+    margin:0 0 16px;
+
+    font-family:"Barrio", system-ui;
+    font-weight:400;
+    font-size:1.85rem;
+    color:white;
+}
+
+.reddit-overlay-modal p{
+    margin:0 0 14px;
+
+    color:var(--muted);
+    line-height:1.65;
+    font-size:.92rem;
+    font-weight:300;
+}
+
+.reddit-overlay-modal p:last-of-type{
+    margin-bottom:24px;
+}
+
+.reddit-overlay-signoff{
+    color:var(--muted) !important;
+    font-size:.88rem;
+    margin-bottom:22px !important;
+}
+
+.reddit-overlay-modal strong{
+    color:var(--text);
+    font-weight:600;
+}
+
+.reddit-overlay-btn{
+    width:100%;
+
+    margin-top:2px;
+
+    padding:14px;
+
+    background:var(--accent);
+    color:#1a1006;
+
+    border:none;
+    border-radius:14px;
+
+    text-align:center;
+
+    font-family:"Fraunces", serif;
+    font-size:.95rem;
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.15s ease;
+}
+
+.reddit-overlay-btn:hover{
+    filter:brightness(1.08);
 }
 
 /* =========================
