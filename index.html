@@ -483,7 +483,7 @@ let selectedSubtitleIds = new Set();
 
 const activeFilters = {
     tour: new Set(),
-    format: new Set(),
+    language: new Set(),
     master: new Set(),
     type: new Set(),
     city: new Set(),
@@ -621,6 +621,24 @@ async function fetchSheetsData() {
                 ? formatSizeRaw.split(/[-–—]/)
                 : [];
 
+            // Column O may contain a "Language – Czech" style note among
+            // other free-text remarks. Only treat it as a language if the
+            // word "language" actually appears — anything else in that
+            // column is an unrelated note and gets ignored here, so the
+            // recording defaults to English.
+            const extraInfoRaw =
+                row[14]
+                ? row[14].toString().trim()
+                : '';
+
+            const languageMatch =
+                extraInfoRaw.match(/language\s*[-–—:]\s*([^,;\n]+)/i);
+
+            const language =
+                languageMatch
+                ? languageMatch[1].trim()
+                : 'English';
+
             const masterNotes =
                 row[8]
                 ? row[8].toString().trim()
@@ -722,10 +740,11 @@ async function fetchSheetsData() {
                     : '',
 
                 // Column O — bonus content or known issues with this recording
-                extraInfo:
-                    row[14]
-                    ? row[14].toString().trim()
-                    : '',
+                extraInfo: extraInfoRaw,
+
+                // Derived from column O — "Language – Czech" style note,
+                // defaulting to English when no such note is present.
+                language: language,
 
                 amountRecorded:
                     amountRecorded &&
@@ -1686,7 +1705,7 @@ function buildFilterPanel() {
                 return [...set];
             }
         },
-        { key: 'format', label: 'Format' },
+        { key: 'language', label: 'Language' },
         { key: 'type', label: 'Type' }
     ];
 
@@ -1858,7 +1877,7 @@ function updateFilterCount() {
 
     const total =
     activeFilters.tour.size +
-    activeFilters.format.size +
+    activeFilters.language.size +
     activeFilters.master.size +
     activeFilters.type.size +
     activeFilters.city.size +
@@ -1895,7 +1914,7 @@ function applyFiltersAndSearch() {
 
     const hasFilters =
     activeFilters.tour.size ||
-    activeFilters.format.size ||
+    activeFilters.language.size ||
     activeFilters.master.size ||
     activeFilters.type.size ||
     activeFilters.city.size ||
@@ -1961,9 +1980,9 @@ function applyFiltersAndSearch() {
             !activeFilters.tour.size ||
             activeFilters.tour.has(r.tour);
 
-            const formatOk =
-            !activeFilters.format.size ||
-            activeFilters.format.has(r.format);
+            const languageOk =
+            !activeFilters.language.size ||
+            activeFilters.language.has(r.language);
 
             const masterOk =
             !activeFilters.master.size ||
@@ -2000,7 +2019,7 @@ function applyFiltersAndSearch() {
                 ? r.subtitleLangs.some(l => activeFilters.subtitleLangs.has(l))
                 : r.subtitleLangs.length > 0);
 
-            return tourOk && formatOk && masterOk && typeOk && cityOk && mediaTypeOk && performerOk && giftableOk && subtitlesOk;
+            return tourOk && languageOk && masterOk && typeOk && cityOk && mediaTypeOk && performerOk && giftableOk && subtitlesOk;
         });
     }
 
@@ -2251,7 +2270,7 @@ document
 .addEventListener('click', function() {
 
     activeFilters.tour.clear();
-    activeFilters.format.clear();
+    activeFilters.language.clear();
     activeFilters.master.clear();
     activeFilters.type.clear();
     activeFilters.city.clear();
