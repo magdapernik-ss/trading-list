@@ -1030,19 +1030,39 @@ header p{
 }
 
 .subtitles-panel-note{
-    margin:14px 0 0;
-    padding:14px 16px;
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
 
-    background:rgba(var(--sub-accent-rgb),.06);
-    border:1px solid rgba(var(--sub-accent-rgb),.18);
+    margin:22px 0 22px;
+    padding:12px 16px;
+
+    background:rgba(255,138,61,.08);
+    border:1px solid rgba(255,138,61,.22);
     border-radius:12px;
 
-    color:var(--sub-accent);
-    opacity:.9;
     font-size:.78rem;
     line-height:1.55;
     white-space:normal;
     text-align:left;
+}
+
+.subtitles-panel-note i{
+    color:var(--accent);
+    font-size:.95rem;
+    margin-top:2px;
+    flex-shrink:0;
+}
+
+.subtitles-panel-note p{
+    margin:0;
+    color:#edf2f8;
+    font-size:.9rem;
+    font-weight:300;
+    line-height:1.45;
+
+    word-break:break-word;
+    overflow-wrap:anywhere;
 }
 
 .subtitles-panel-note-mark{

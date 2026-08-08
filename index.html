@@ -73,7 +73,7 @@
         <h2>Before you reach out</h2>
 
         <p>
-            Adding this note because people have gotten weirdly disrespectful lately. Begging, being rude, trying to talk me into gifting ungiftable recordings, or otherwise being difficult will very likely get your message ignored — and so will repeated follow-ups.
+            Adding this note because people have gotten weirdly disrespectful lately. Begging, being rude, trying to talk me into gifting ungiftable recordings, or otherwise being difficult will very likely get your message ignored, and so will repeated follow-ups.
         </p>
 
         <p>
@@ -137,7 +137,7 @@
                     <li>Please have a list of your own before requesting a trade – a Google Sheet, document, anything is fine –<br>
                         <strong>I don't trade for recordings without an at least semi-complete info!</strong></li>
                     <li>I gift a maximum of <strong>2 recordings</strong> – if you have nothing to trade, please tick the gift box in the form.</li>
-                    <li>I don't usually do trades larger than <strong>10 recordings</strong> at once — if you wish to do a trade that large, contact me directly.</li>
+                    <li>I don't usually do trades larger than <strong>10 recordings</strong> at once – if you wish to do a trade that large, contact me directly.</li>
                     <li><strong>NFT recordings are marked on the list and cannot be requested.</strong></li>
                     <li>Please allow a few days for me to respond – if I take more than three days feel free to reach out!</li>
                 </ul>
@@ -163,10 +163,8 @@
                 </ul>
                 <p class="text-accent">Missing smalls – I want just the smalls to these videos, but I'm willing to trade as if for the full file, standard 1:1 video rules apply:</p>
                     <ul>
-                        <li><strong>Matilda the Musical</strong> – West End – ××/11/2018 – NYCG8R – <a class="missing-smalls-link" href="https://encora.it/recordings/7833" target="_blank">https://encora.it/recordings/7833</a></li>
                         <li><strong>Wicked</strong> – Broadway – 09/10/2007 – SunsetBlvd79 – <a class="missing-smalls-link" href="https://encora.it/recordings/24" target="_blank">https://encora.it/recordings/24</a></li>
                         <li><strong>Wicked</strong> – Broadway – 13/03/2008 – juniper47 – <a class="missing-smalls-link" href="https://encora.it/recordings/314" target="_blank">https://encora.it/recordings/314</a></li>
-                        <li><strong>Finding Neverland</strong> – Pre-Broadway / American Repertory Theater – 17/08/2014 (M) – SJ Bernly – <a class="missing-smalls-link" href="https://encora.it/recordings/1153" target="_blank">https://encora.it/recordings/1153</a></li>
                     </ul>
                 <p class="text-accent">These are just some, for a full list of my wants see my <a href="https://encora.it/traders/myopia779/wants" class="header-link" target="_blank">Encora</a>, or summary below – may not be 100% up to date, the most precise one is on Encora, too lazy to update as often here, red ones are NFT, if it doesnt show or you want full info see <a href="https://docs.google.com/spreadsheets/d/1HYydYbL3iKz9MReUI3I6xTZgJzKNRJOYjmumkQ-R2mE/view?gid=354359985#gid=354359985" class="header-link" target="_blank" >here</a>:</p>
 
@@ -184,7 +182,7 @@
             <i class="fa-solid fa-closed-captioning"></i>
 
             <div class="subtitles-panel-copy">
-                <p class="subtitles-panel-title">Looking for subtitles?</p>
+                <p class="subtitles-panel-title">Subtitles</p>
             </div>
 
             <label class="toggle-switch-wrap">
@@ -204,14 +202,12 @@
 
             </div>
 
-            <p class="subtitles-panel-note" id="subtitlesPanelNote">
-                
-                Either keep scrolling as usual — recordings will show a subtitles badge no matter what other filters are active — or press “Filter” to show only those with desired subtitles.
-                <br>
-                Only want the subtitles, not the whole recording? Click a title's subtitles badge to add just its subtitles to your request (click again to remove).
-                <br>
-                I give out subtitles gladly and don't ask for anything in return — but if you'd like to toss in a gift for them anyway, I certainly won't say no :)
-            </p>
+            <div class="subtitles-panel-note" id="subtitlesPanelNote">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>
+                    You can now click a title's subtitle badge on the recording card to add just its subtitles to your request!
+                </p>
+            </div>
 
             <div class="subtitles-panel-actions">
 
@@ -1168,7 +1164,7 @@ function createSection(items, expandGroups) {
                                     title="${selectedIds.has(item.id)
                                         ? 'Included automatically with your recording request'
                                         : (selectedSubtitleIds.has(item.id)
-                                            ? 'Subtitles selected — click to remove from your request'
+                                            ? 'Subtitles selected – click to remove from your request'
                                             : 'Click to request just the subtitles')}"
                                 >
                                     ${formatSubtitleLangs(item.subtitleLangs)}
@@ -1400,7 +1396,7 @@ function refreshSubtitleBadge(id) {
     badge.title = included
         ? 'Included automatically with your recording request'
         : (selected
-            ? 'Subtitles selected — click to remove from your request'
+            ? 'Subtitles selected – click to remove from your request'
             : 'Click to request just the subtitles');
 }
 
@@ -2351,7 +2347,7 @@ function renderSelectedList() {
 
         row.innerHTML = `
             <span class="trade-selected-label">
-                ${labelParts.join(' — ')}
+                ${labelParts.join(' – ')}
             </span>
             <button
                 type="button"
@@ -2392,7 +2388,7 @@ function renderSelectedList() {
         row.innerHTML = `
             <span class="trade-selected-label">
                 <i class="fa-solid fa-closed-captioning trade-selected-sub-icon"></i>
-                ${labelParts.join(' — ')}
+                ${labelParts.join(' – ')}
                 <span class="trade-selected-sub-note">subtitles only</span>
             </span>
             <button
@@ -2643,7 +2639,7 @@ function buildRecordingsListText() {
             formatWebDate(item.date)
         ].filter(Boolean);
 
-        lines.push('- ' + item.id + ' ' + parts.join(' — '));
+        lines.push('- ' + item.id + ' ' + parts.join(' – '));
     });
 
     selectedSubtitleIds.forEach(id => {
@@ -2659,7 +2655,7 @@ function buildRecordingsListText() {
             formatWebDate(item.date)
         ].filter(Boolean);
 
-        lines.push('- SUB ' + item.id + ' ' + parts.join(' — '));
+        lines.push('- SUB ' + item.id + ' ' + parts.join(' – '));
     });
 
     return lines.join('\n');
@@ -2874,7 +2870,7 @@ document
     ]).then(() => {
 
         setFormStatus(
-            'Request sent! Check your inbox for confirmation — it may land in your spam folder.',
+            'Request sent! Check your inbox for confirmation, it may land in your spam folder.',
             'success'
         );
 
