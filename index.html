@@ -105,6 +105,20 @@
 
     </header>
 
+    <div id="statusBar" class="status-bar trade-status-open">
+
+        <div class="status-bar-updated">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+            <span>Last updated: <strong id="lastUpdatedDate">—</strong></span>
+        </div>
+
+        <div id="tradeStatusBadge" class="trade-status-badge">
+            <span class="trade-status-dot"></span>
+            <span id="tradeStatusLabel">Open to trades</span>
+        </div>
+
+    </div>
+
     <div class="info-sections">
 
         <details class="info-accordion">
@@ -225,7 +239,9 @@
 
     </div>
 
-    <div class="controls">
+    <div id="stickySentinel" class="sticky-sentinel"></div>
+
+    <div id="stickyToolbar" class="sticky-toolbar">
 
         <div class="search-row">
 
@@ -250,6 +266,10 @@
             <button class="mini-nav-btn" data-category="proshots">Plays</button>
             <button class="mini-nav-btn" data-category="concerts">Concerts</button>
         </div>
+
+    </div>
+
+    <div class="controls">
 
         <div id="filterPanel" class="filter-panel">
 
@@ -409,6 +429,29 @@
 
 <script>
 
+// ===== Sticky search + filters toolbar =====
+// Uses a 1px sentinel placed right above the toolbar: once it scrolls
+// out of view the toolbar is actually "stuck" to the top, so we add
+// a class that fades in a blurred glass background, a shadow and a
+// slightly more compact height — purely cosmetic, no layout jumps.
+(function() {
+
+    const sentinel = document.getElementById('stickySentinel');
+    const toolbar = document.getElementById('stickyToolbar');
+
+    if (!sentinel || !toolbar || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(
+        ([entry]) => {
+            toolbar.classList.toggle('is-stuck', !entry.isIntersecting);
+        },
+        { threshold: 0, rootMargin: '-1px 0px 0px 0px' }
+    );
+
+    observer.observe(sentinel);
+
+})();
+
 // ===== Reddit welcome overlay =====
 // Shows a heads-up modal to visitors coming from Reddit (via referrer
 // or a ?ref=reddit link) on their first visit only. Once dismissed,
@@ -461,6 +504,9 @@ const REAL_DATA_URL =
 
 const WANTS_DATA_URL =
 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSNr9mFlX967HrZ8rtrQ3dkUXn1AVYit1i8p44R3tLht53YDGpWl8ydsrRLOkp6Zrw9BZ2g_gZ1nmtu/pub?gid=354359985&single=true&output=csv';
+
+const CONTACT_DATA_URL =
+'https://docs.google.com/spreadsheets/d/e/2PACX-1vSNr9mFlX967HrZ8rtrQ3dkUXn1AVYit1i8p44R3tLht53YDGpWl8ydsrRLOkp6Zrw9BZ2g_gZ1nmtu/pub?gid=1813036001&single=true&output=csv';
 
 const EMAILJS_PUBLIC_KEY = '53f0mRlvHWe11Y7Xx';
 const EMAILJS_SERVICE_ID = 'service_zpa2m63';
@@ -688,8 +734,8 @@ async function fetchSheetsData() {
                     : '',
 
                 tour:
-                    row[3]
-                    ? row[3].toString().trim()
+                    row[2]
+                    ? row[2].toString().trim()
                     : '',
 
                 date:
@@ -729,6 +775,10 @@ async function fetchSheetsData() {
                     formatSizeParts[1]
                     ? formatSizeParts[1].trim()
                     : '',
+
+                // Column N — full "Format – Size" text, unsliced, exactly
+                // as it appears in the sheet (e.g. "MP4 – 200 GB").
+                formatFull: formatSizeRaw,
 
                 venue:
                     row[2]
@@ -789,7 +839,20 @@ async function fetchSheetsData() {
                         .split(',')
                         .map(code => code.trim().toUpperCase())
                         .filter(Boolean)
-                    : []
+                    : [],
+
+                // Column AB — numeric sort key used to order recordings
+                // within a title group, smallest first.
+                sortKey: (() => {
+                    const raw =
+                        row[27]
+                        ? row[27].toString().trim().replace(',', '.')
+                        : '';
+                    const parsed = raw !== '' ? parseFloat(raw) : NaN;
+                    return Number.isFinite(parsed)
+                        ? parsed
+                        : Number.POSITIVE_INFINITY;
+                })()
 
             });
         }
@@ -953,6 +1016,89 @@ async function fetchWantsList() {
     }
 }
 
+// Pulls "last updated" (cell B9) and "trade status" (cell B10) from
+// the Contact tab of the spreadsheet and renders the status bar.
+//
+// Trade status text in B10 is matched case-insensitively, in this
+// priority order (first match wins):
+//   contains "closed"  -> red badge   "Closed to trades"
+//   contains "limited" -> orange badge "Limited trades"
+//   contains "open"    -> green badge  "Open to trades"
+//   anything else / empty -> falls back to green "Open to trades"
+async function fetchContactInfo() {
+
+    const dateEl = document.getElementById('lastUpdatedDate');
+    const barEl = document.getElementById('statusBar');
+    const labelEl = document.getElementById('tradeStatusLabel');
+
+    if (!dateEl || !barEl || !labelEl) return;
+
+    try {
+
+        const response = await fetch(CONTACT_DATA_URL);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const csvText = await response.text();
+
+        const parsed = Papa.parse(csvText, {
+            header: false,
+            skipEmptyLines: false
+        });
+
+        const rows = parsed.data;
+
+        // Row 9 = index 8, Row 10 = index 9. Column B = index 1.
+        const lastUpdatedRaw =
+            rows[8] && rows[8][1]
+            ? rows[8][1].toString().trim()
+            : '';
+
+        const statusRaw =
+            rows[9] && rows[9][1]
+            ? rows[9][1].toString().trim()
+            : '';
+
+        dateEl.textContent =
+            lastUpdatedRaw
+            ? formatWebDate(lastUpdatedRaw)
+            : 'Unknown';
+
+        const statusLower = statusRaw.toLowerCase();
+
+        let statusClass = 'trade-status-open';
+        let statusLabel = 'Open to trades';
+
+        if (statusLower.includes('closed')) {
+            statusClass = 'trade-status-closed';
+            statusLabel = 'Closed to trades';
+        } else if (statusLower.includes('limited')) {
+            statusClass = 'trade-status-limited';
+            statusLabel = 'Limited trades';
+        } else if (statusLower.includes('open')) {
+            statusClass = 'trade-status-open';
+            statusLabel = 'Open to trades';
+        }
+
+        barEl.classList.remove(
+            'trade-status-open',
+            'trade-status-limited',
+            'trade-status-closed'
+        );
+        barEl.classList.add(statusClass);
+
+        labelEl.textContent = statusLabel;
+
+    } catch (error) {
+
+        console.error(error);
+
+        dateEl.textContent = 'Unavailable';
+    }
+}
+
 function renderList(recordings, expandGroups) {
 
     const contentArea =
@@ -1092,17 +1238,30 @@ function createSection(items, expandGroups) {
 
         groupBody.className = 'title-group-body';
 
-        // Recordings within the group keep the order they appear in the
-        // original spreadsheet (no re-sorting).
+        // Within a title group, order recordings by the sort key from
+        // column AB, smallest to largest (items without a valid key
+        // fall to the end, keeping their relative spreadsheet order).
+        groupItems.sort((a, b) => a.sortKey - b.sortKey);
+
         groupItems.forEach(item => {
 
             const isNFT = item.isNft;
+
+            const mediaTypeLower =
+                (item.mediaType || '').toLowerCase();
+
+            const isAudioType = mediaTypeLower.includes('audio');
+            const isVideoType = mediaTypeLower.includes('video');
+
+            const mediaTypeClass =
+                isAudioType ? ' media-audio-card' :
+                (isVideoType ? ' media-video-card' : '');
 
             const card =
             document.createElement('div');
 
             card.className =
-            'show-card' + (isNFT ? ' nft-card' : '');
+            'show-card' + mediaTypeClass + (isNFT ? ' nft-card' : '');
 
             card.innerHTML = `
 
@@ -1187,20 +1346,29 @@ function createSection(items, expandGroups) {
                             `
                             : ''}
 
-                        ${item.format
+                        ${item.date
                             ? `
                             <div class="pill">
-                                <i class="fa-regular fa-file-video"></i>
-                                ${item.format}
+                                <i class="fa-regular fa-calendar"></i>
+                                ${formatWebDate(item.date)}${item.matinee ? ' ' + item.matinee : ''}
                             </div>
                             `
                             : ''}
 
-                        ${item.size
+                        ${isVideoType
                             ? `
-                            <div class="pill">
-                                <i class="fa-solid fa-hard-drive"></i>
-                                ${item.size}
+                            <div class="pill pill-media pill-media-video">
+                                <i class="fa-solid fa-video"></i>
+                                Video
+                            </div>
+                            `
+                            : ''}
+
+                        ${isAudioType
+                            ? `
+                            <div class="pill pill-media pill-media-audio">
+                                <i class="fa-solid fa-headphones"></i>
+                                Audio
                             </div>
                             `
                             : ''}
@@ -1224,20 +1392,11 @@ function createSection(items, expandGroups) {
 
                 <div class="info-left">
 
-                    ${item.venue
+                    ${item.tour
                         ? `
                         <div class="info-row">
                             <span>Tour</span>
-                            <p>${item.venue}</p>
-                        </div>
-                        `
-                        : ''}
-
-                    ${item.date
-                        ? `
-                        <div class="info-row">
-                            <span>Date</span>
-                            <p>${formatWebDate(item.date)}${item.matinee ? ' ' + item.matinee : ''}</p>
+                            <p>${item.tour}</p>
                         </div>
                         `
                         : ''}
@@ -1247,6 +1406,15 @@ function createSection(items, expandGroups) {
                         <div class="info-row">
                             <span>Master</span>
                             <p>${item.master}</p>
+                        </div>
+                        `
+                        : ''}
+
+                    ${item.formatFull
+                        ? `
+                        <div class="info-row">
+                            <span>Format</span>
+                            <p>${item.formatFull}</p>
                         </div>
                         `
                         : ''}
@@ -2925,6 +3093,7 @@ document
 
 fetchSheetsData();
 fetchWantsList();
+fetchContactInfo();
 
 </script>
 

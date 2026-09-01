@@ -7,6 +7,8 @@
     --muted:#8d99aa;
     --border:rgba(255,255,255,.05);
     --nft-tag:#c0392b;
+    --video-accent:#5491ff;
+    --audio-accent:#2ecc71;
 }
 
 /* =========================
@@ -40,6 +42,22 @@
 .nft-card:hover{
     background:rgba(48,18,18,.8) !important;
     border-color:rgba(255,255,255,.08) !important;
+}
+
+.nft-card.media-video-card{
+    border-left-color:rgba(84,145,255,.5) !important;
+}
+
+.nft-card.media-audio-card{
+    border-left-color:rgba(46,204,113,.5) !important;
+}
+
+.nft-card.media-video-card:hover{
+    border-left-color:rgba(84,145,255,.8) !important;
+}
+
+.nft-card.media-audio-card:hover{
+    border-left-color:rgba(46,204,113,.8) !important;
 }
 
 /* Placeholder exactly matches .show-checkbox */
@@ -129,6 +147,190 @@ header p{
 
 .controls{
     margin-bottom:28px;
+}
+
+/* =========================
+   STICKY SEARCH + FILTERS TOOLBAR
+========================= */
+
+.sticky-sentinel{
+    height:1px;
+}
+
+.sticky-toolbar{
+    position:sticky;
+    top:0;
+    z-index:60;
+
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+
+    padding:16px 0 14px;
+    margin:-16px 0 -14px;
+
+    background:transparent;
+    border-radius:0 0 20px 20px;
+    box-shadow:0 0 0 rgba(0,0,0,0);
+
+    transition:
+    background .35s ease,
+    box-shadow .35s ease,
+    backdrop-filter .35s ease,
+    padding .25s ease;
+}
+
+.sticky-toolbar.is-stuck{
+    background:rgba(11,16,22,.78);
+    backdrop-filter:blur(16px) saturate(140%);
+    -webkit-backdrop-filter:blur(16px) saturate(140%);
+    box-shadow:
+    0 14px 30px -18px rgba(0,0,0,.65),
+    0 1px 0 rgba(255,255,255,.06);
+    padding:32px 0 12px;
+}
+
+.sticky-toolbar.is-stuck .search-bar,
+.sticky-toolbar.is-stuck .filter-toggle{
+    height:48px;
+}
+
+.sticky-toolbar .search-row,
+.sticky-toolbar .mini-nav{
+    transition:transform .25s ease;
+}
+
+/* =========================
+   STATUS BAR (last updated + trade status)
+========================= */
+
+.status-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:14px;
+    margin-bottom:28px;
+    padding:12px 20px;
+    border:1px solid rgba(255,255,255,.07);
+    border-left:3px solid rgba(46,204,113,.6);
+    border-right:3px solid rgba(46,204,113,.6);
+    border-radius:10px;
+    background:rgba(255,255,255,.02);
+    transition:border-color .2s ease, background .2s ease;
+}
+
+.status-bar-updated{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:var(--text);
+    font-size:.88rem;
+    font-weight:300;
+    transition:color .2s ease;
+}
+
+.status-bar-updated i{
+    color:var(--accent);
+    font-size:.85rem;
+    transition:color .2s ease;
+}
+
+.status-bar-updated strong{
+    color:var(--accent);
+    font-weight:700;
+    transition:color .2s ease;
+}
+
+.trade-status-badge{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:5px 13px;
+    border-radius:999px;
+    font-size:.82rem;
+    font-weight:700;
+    letter-spacing:.3px;
+    text-transform:uppercase;
+    border:1px solid transparent;
+}
+
+.trade-status-dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    flex-shrink:0;
+    background:currentColor;
+}
+
+.status-bar.trade-status-open{
+    background:rgba(46,204,113,.06);
+    border-left-color:#2ecc71;
+    border-right-color:#2ecc71;
+}
+
+.status-bar.trade-status-limited{
+    background:rgba(255,159,28,.06);
+    border-left-color:#ff9f1c;
+    border-right-color:#ff9f1c;
+}
+
+.status-bar.trade-status-closed{
+    background:rgba(220,38,38,.06);
+    border-left-color:#e5484d;
+    border-right-color:#e5484d;
+}
+
+.status-bar.trade-status-open .trade-status-badge{
+    background:rgba(46,204,113,.16);
+    border-color:rgba(46,204,113,.45);
+}
+
+.status-bar.trade-status-limited .trade-status-badge{
+    background:rgba(255,159,28,.16);
+    border-color:rgba(255,159,28,.5);
+}
+
+.status-bar.trade-status-closed .trade-status-badge{
+    background:rgba(220,38,38,.16);
+    border-color:rgba(220,38,38,.5);
+}
+
+.status-bar.trade-status-open .trade-status-dot,
+.status-bar.trade-status-open #tradeStatusLabel,
+.status-bar.trade-status-open .status-bar-updated,
+.status-bar.trade-status-open .status-bar-updated i,
+.status-bar.trade-status-open .status-bar-updated strong{
+    color:#2ecc71;
+}
+
+.status-bar.trade-status-limited .trade-status-dot,
+.status-bar.trade-status-limited #tradeStatusLabel,
+.status-bar.trade-status-limited .status-bar-updated,
+.status-bar.trade-status-limited .status-bar-updated i,
+.status-bar.trade-status-limited .status-bar-updated strong{
+    color:#ff9f1c;
+}
+
+.status-bar.trade-status-closed .trade-status-dot,
+.status-bar.trade-status-closed #tradeStatusLabel,
+.status-bar.trade-status-closed .status-bar-updated,
+.status-bar.trade-status-closed .status-bar-updated i,
+.status-bar.trade-status-closed .status-bar-updated strong{
+    color:#e5484d;
+}
+
+@media (max-width:520px){
+
+    .status-bar{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .trade-status-badge{
+        font-size:1.05rem;
+    }
+
 }
 
 /* =========================
@@ -1304,6 +1506,25 @@ header p{
     rgba(255,255,255,.08);
 }
 
+/* =========================
+   MEDIA TYPE (audio / video) VISUAL SEPARATION
+========================= */
+
+.show-card.media-video-card{
+    border-left:3px solid rgba(84,145,255,.5);
+}
+
+.show-card.media-audio-card{
+    border-left:3px solid rgba(46,204,113,.5);
+}
+
+.show-card.media-video-card:hover{
+    border-left-color:rgba(84,145,255,.8);
+}
+
+.show-card.media-audio-card:hover{
+    border-left-color:rgba(46,204,113,.8);
+}
 
 .title-block{
     flex:1;
@@ -1551,6 +1772,17 @@ header p{
 .pill i{
     color:var(--muted);
     font-size:.9rem;
+    opacity:.9;
+}
+
+.pill.pill-media-video,
+.pill.pill-media-audio{
+    color:var(--muted);
+}
+
+.pill.pill-media-video i,
+.pill.pill-media-audio i{
+    color:var(--muted);
     opacity:.9;
 }
 
@@ -2117,6 +2349,10 @@ button.subtitles-tag-included:hover{
    NEKOMPROMISNÍ MOBILNÍ OPRAVA (PC verze zůstává absolutně netknutá)
    ========================================================================== */
 @media(max-width:860px){
+
+    .sticky-toolbar.is-stuck{
+        padding-top:12px;
+    }
 
     body{
         padding:0 16px 34px;
