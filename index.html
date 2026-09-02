@@ -267,10 +267,6 @@
             <button class="mini-nav-btn" data-category="concerts">Concerts</button>
         </div>
 
-    </div>
-
-    <div class="controls">
-
         <div id="filterPanel" class="filter-panel">
 
             <div class="filter-panel-inner">
@@ -652,10 +648,10 @@ async function fetchSheetsData() {
 
             if (!row || !row[0]) continue;
 
-            // Column N holds "Format – Size" combined, e.g. "MP4 – 4.2 GB"
+            // Column M holds "Format – Size" combined, e.g. "MP4 – 4.2 GB"
             const formatSizeRaw =
-                row[13]
-                ? row[13].toString().trim()
+                row[12]
+                ? row[12].toString().trim()
                 : '';
 
             const formatSizeParts =
@@ -663,14 +659,14 @@ async function fetchSheetsData() {
                 ? formatSizeRaw.split(/[-–—]/)
                 : [];
 
-            // Column O may contain a "Language – Czech" style note among
+            // Column N may contain a "Language – Czech" style note among
             // other free-text remarks. Only treat it as a language if the
             // word "language" actually appears — anything else in that
             // column is an unrelated note and gets ignored here, so the
             // recording defaults to English.
             const extraInfoRaw =
-                row[14]
-                ? row[14].toString().trim()
+                row[13]
+                ? row[13].toString().trim()
                 : '';
 
             const languageMatch =
@@ -682,13 +678,13 @@ async function fetchSheetsData() {
                 : 'English';
 
             const masterNotes =
-                row[8]
-                ? row[8].toString().trim()
+                row[7]
+                ? row[7].toString().trim()
                 : '';
 
             const tradingNotes =
-                row[9]
-                ? row[9].toString().trim()
+                row[8]
+                ? row[8].toString().trim()
                 : '';
 
             const notesParts = [];
@@ -696,18 +692,18 @@ async function fetchSheetsData() {
             if (tradingNotes) notesParts.push(tradingNotes);
 
             const amountRecorded =
-                row[18]
-                ? row[18].toString().trim()
+                row[17]
+                ? row[17].toString().trim()
                 : '';
 
-            // Column T usually holds something like "NFT 15/06/2027"
+            // Column S usually holds something like "NFT 15/06/2027"
             // or "NFT 2026-12-01" (word + date combined) — so detect
             // NFT status by looking for "nft" anywhere in the text,
             // then pull the date part back out to display, normalising
             // it to dd/mm/yyyy either way.
             const nftRaw =
-                row[19]
-                ? row[19].toString().trim()
+                row[18]
+                ? row[18].toString().trim()
                 : '';
 
             const nftIsoMatch =
@@ -739,31 +735,31 @@ async function fetchSheetsData() {
                     : '',
 
                 date:
-                    row[4]
-                    ? row[4].toString().trim()
+                    row[3]
+                    ? row[3].toString().trim()
                     : '',
 
-                matinee: matineeSuffix(row[5]),
+                matinee: matineeSuffix(row[4]),
 
                 master:
+                    row[5]
+                    ? row[5].toString().trim()
+                    : '',
+
+                cast:
                     row[6]
                     ? row[6].toString().trim()
                     : '',
 
-                cast:
-                    row[7]
-                    ? row[7].toString().trim()
-                    : '',
-
                 performers: extractPerformers(
-                    row[7] ? row[7].toString().trim() : ''
+                    row[6] ? row[6].toString().trim() : ''
                 ),
 
                 notes: notesParts.join('<br><br>'),
 
                 giftStatus:
-                    row[10]
-                    ? row[10].toString().trim()
+                    row[9]
+                    ? row[9].toString().trim()
                     : '',
 
                 format:
@@ -776,19 +772,20 @@ async function fetchSheetsData() {
                     ? formatSizeParts[1].trim()
                     : '',
 
-                // Column N — full "Format – Size" text, unsliced, exactly
+                // Column M — full "Format – Size" text, unsliced, exactly
                 // as it appears in the sheet (e.g. "MP4 – 200 GB").
                 formatFull: formatSizeRaw,
 
+                // Column O — Venue
                 venue:
-                    row[2]
-                    ? row[2].toString().trim()
+                    row[14]
+                    ? row[14].toString().trim()
                     : '',
 
-                // Column O — bonus content or known issues with this recording
+                // Column N — bonus content or known issues with this recording
                 extraInfo: extraInfoRaw,
 
-                // Derived from column O — "Language – Czech" style note,
+                // Derived from column N — "Language – Czech" style note,
                 // defaulting to English when no such note is present.
                 language: language,
 
@@ -803,50 +800,50 @@ async function fetchSheetsData() {
                 isNft: /nft/i.test(nftRaw),
 
                 encora:
-                    row[20]
-                    ? row[20].toString().trim()
+                    row[19]
+                    ? row[19].toString().trim()
                     : '',
 
-                // Column L
+                // Column K
                 type:
-                    row[11]
-                    ? row[11].toString().trim()
+                    row[10]
+                    ? row[10].toString().trim()
+                    : '',
+
+                // Column P
+                city:
+                    row[15]
+                    ? row[15].toString().trim()
                     : '',
 
                 // Column Q
-                city:
+                mediaType:
                     row[16]
                     ? row[16].toString().trim()
                     : '',
 
-                // Column R
-                mediaType:
-                    row[17]
-                    ? row[17].toString().trim()
-                    : '',
-
-                // Column V — text to copy to clipboard via the copy icon
+                // Column U — text to copy to clipboard via the copy icon
                 copyText:
-                    row[21]
-                    ? row[21].toString().trim()
+                    row[20]
+                    ? row[20].toString().trim()
                     : '',
 
-                // Column X — comma separated language codes, e.g. "EN,CS"
+                // Column W — comma separated language codes, e.g. "EN,CS"
                 subtitleLangs:
-                    row[23]
-                    ? row[23]
+                    row[22]
+                    ? row[22]
                         .toString()
                         .split(',')
                         .map(code => code.trim().toUpperCase())
                         .filter(Boolean)
                     : [],
 
-                // Column AB — numeric sort key used to order recordings
+                // Column AA — numeric sort key used to order recordings
                 // within a title group, smallest first.
                 sortKey: (() => {
                     const raw =
-                        row[27]
-                        ? row[27].toString().trim().replace(',', '.')
+                        row[26]
+                        ? row[26].toString().trim().replace(',', '.')
                         : '';
                     const parsed = raw !== '' ? parseFloat(raw) : NaN;
                     return Number.isFinite(parsed)
